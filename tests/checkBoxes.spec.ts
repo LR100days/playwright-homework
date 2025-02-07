@@ -2,16 +2,16 @@ import { test, expect } from '@playwright/test';
 
 test.beforeEach( async({page}) => {
   await page.goto('/')
-  await page.getByRole('button', {name:" Veterinarians"}).click();
-  await page.getByText(' All').click()
+  await page.getByRole('button', {name:"Veterinarians"}).click();
+  await page.getByRole('link', {name:"All"}).click()
 })
 
 test.describe("Checkboxes assignment", async () => {
   test('Validate selected specialties', async ({page}) => {
-    await expect(page.locator('h2')).toHaveText('Veterinarians')
+    await expect(page.getByRole('heading')).toHaveText('Veterinarians')
 
     // Select the veterinarian "Helen Leary" and edit Specialties
-    await page.locator('tr').filter({hasText: ' Helen Leary '}).getByRole('button',{name: "Edit Vet"}).click();
+    await page.locator('tr', {hasText: 'Helen Leary'}).getByRole('button',{name: "Edit Vet"}).click();
     
     // Check default Specialties and its selection
     const specialtiesDropdown = page.locator('.selected-specialties')
@@ -37,7 +37,7 @@ test.describe("Checkboxes assignment", async () => {
 
   test('Select all specialties', async ({page}) => {
     // Select the veterinarian "Rafael Ortega" and edit Specialties
-    await page.locator('tr').filter({hasText: ' Rafael Ortega '}).getByRole('button',{name: "Edit Vet"}).click();
+    await page.locator('tr', {hasText: 'Rafael Ortega'}).getByRole('button',{name: "Edit Vet"}).click();
     
     // Check default Specialties
     const specialtiesDropdown = page.locator('.selected-specialties')
@@ -56,7 +56,7 @@ test.describe("Checkboxes assignment", async () => {
 
   test('Unselect all specialties', async ({page}) => {
     // Select the veterinarian "Linda Douglas" and edit Specialties
-    await page.locator('tr').filter({hasText: ' Linda Douglas '}).getByRole('button',{name: "Edit Vet"}).click();
+    await page.locator('tr', {hasText: 'Linda Douglas'}).getByRole('button',{name: "Edit Vet"}).click();
     
     // Check default Specialties
     const specialtiesDropdown = page.locator('.selected-specialties')
@@ -70,6 +70,6 @@ test.describe("Checkboxes assignment", async () => {
         await box.uncheck({force:true})
         expect(await box.isChecked()).toBeFalsy()
     }
-    await expect(specialtiesDropdown).toHaveText('');
+    await expect(specialtiesDropdown).toBeEmpty();
   });
 })
