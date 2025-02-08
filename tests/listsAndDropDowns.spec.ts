@@ -40,7 +40,7 @@ test.describe("Lists and dropdowns assignment", async () => {
     // Update pet type 
         const petTypeDropdownMenu = page.locator('#type')
 
-        petTypeDropdownMenu.selectOption('bird')
+        await petTypeDropdownMenu.selectOption('bird')
         await expect(petTypeField).toHaveValue('bird')
         await expect(petTypeDropdownMenu).toHaveValue('bird')
 
@@ -52,7 +52,7 @@ test.describe("Lists and dropdowns assignment", async () => {
     // Revert the selection of the pet type "bird" to its initial value "dog" and verify pet type
         await petRosy.getByRole('button', { name: 'Edit Pet' }).click()
         await expect(petTypeField).toHaveValue('bird')
-        petTypeDropdownMenu.selectOption('dog')
+        await petTypeDropdownMenu.selectOption('dog')
         await expect(petTypeField).toHaveValue('dog')
         await expect(petTypeDropdownMenu).toHaveValue('dog')
         await page.getByRole('button', {name:"Update Pet"}).click();
