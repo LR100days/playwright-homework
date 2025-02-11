@@ -4,32 +4,39 @@ test.beforeEach( async({page}) => {
   await page.goto('/')
 })
 
-test.describe("Interacting with Input Fields practice", async () => {
+test.describe("Owners table practice", async () => {
     test.beforeEach( async({page}) => {
         await page.getByRole('button', {name:"Owners"}).click();
         await page.getByRole('link', {name:"Search"}).click();
       })
 
         test('Validate the pet name city of the owner', async ({page}) => {
-            //  1. Select the OWNERS menu item in the navigation bar and then select "Search" from the drop-down menu
-            // 2. In the list of Owners, locate the owner by the name "Jeff Black". Add the assertions that this owner is from the city of "Monona" and he has a pet with a name "Lucky"
+            const targetOwnerRow = page.getByRole('row', {name: "Jeff Black"})
+            expect(await targetOwnerRow.locator("td").nth(2).textContent()).toEqual('Monona');
+            expect(await targetOwnerRow.locator("td").last().textContent()).toEqual(' Lucky ');
         })
 
         test('Validate owners count of the Madison city', async ({page}) => {
-            // 1. Select the OWNERS menu item in the navigation bar and then select "Search" from the drop-down menu
-            // 2. In the list of Owners, locate all owners who live in the city of "Madison". Add the assertion that the total number of owners should be 4
+            await expect(page.locator("tbody tr").filter({ hasText: "Madison" })).toHaveCount(4);
+        
         })
 
         test('Validate search by Last Name', async ({page}) => {
-            // 1. Select the OWNERS menu item in the navigation bar and then select "Search" from the drop-down menu
-            // 2. On the Owners page, in the "Last name" input field, type the last name "Black" and click the  "Find Owner" button
-            // 3. Add the assertion that the displayed owner in the table has a last name "Black"
-            // 4. In the "Last name" input field, type the last name "Davis" and click the "Find Owner" button
-            // 5. Add the assertion that each owner displayed in the table has a last name "Davis"
-            // 6. In the "Last name" input field, type the partial match for the last name "Es" and click the "Find Owner" button
-            // 7. Add the assertion that each owner displayed in the table has a last name containing "Es"
-            // 8. In the "Last name" input field, type the last name "Playwright" click the "Find Owner" button
-            // 9. Add the assertion of the message "No owners with LastName starting with "Playwright"" 
+            const lastNameInputField = page.getByRole('textbox')
+            const lastNames = ['Black', 'Davis', 'Es', 'Playwright']
+
+            for(let name of lastNames){
+                await lastNameInputField.clear();
+                await lastNameInputField.fill(name);
+                await page.getByRole('button', {name: 'Find Owner'}).click()
+            
+                if(name == 'Playwright'){
+                    await expect(page.locator('.xd-container div').last()).toHaveText('No owners with LastName starting with "Playwright"')
+                } else {
+                    await page.waitForResponse(`https://petclinic-api.bondaracademy.com/petclinic/api/owners?lastName=${name}`);
+                    await expect(page.getByRole('row').locator('td').first()).toContainText(name)
+                }
+            } 
         })
 
         test('Validate phone number and pet name on the Owner Information page', async ({page}) => {
