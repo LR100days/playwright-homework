@@ -1,19 +1,18 @@
 import { test, expect } from '@playwright/test';
+import { NavigationPage } from '../page_objects/navigationPage'
 
 test.beforeEach( async({page}) => {
   await page.goto('/')
-  await page.getByRole('button', {name:"Veterinarians"}).click();
-  await page.getByRole('link', {name:"All"}).click()
+  const navigateTo = new NavigationPage(page)
+  await navigateTo.veterinariansPage()
 })
 
 test.describe("Checkboxes assignment", async () => {
   test('Validate selected specialties', async ({page}) => {
-    await expect(page.getByRole('heading')).toHaveText('Veterinarians')
-
-    // Select the veterinarian "Helen Leary" and edit Specialties
+  
     await page.locator('tr', {hasText: 'Helen Leary'}).getByRole('button',{name: "Edit Vet"}).click();
     
-    // Check default Specialties and its selection
+    // Check default Specialties and its selection for Helen Leary
     const specialtiesDropdown = page.locator('.selected-specialties')
     await expect(specialtiesDropdown).toHaveText('radiology');
 

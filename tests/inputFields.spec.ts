@@ -1,9 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { NavigationPage } from '../page_objects/navigationPage'
 
 test.beforeEach( async({page}) => {
   await page.goto('/');
-  await page.getByRole('link', {name:"Pet Types"}).click();
-  await expect(page.getByRole('heading')).toHaveText('Pet Types');
+  const navigateTo = new NavigationPage(page)
+  await navigateTo.petTypesPage()
 })
 
 test.describe("Interacting with Input Fields practice", async () => {
