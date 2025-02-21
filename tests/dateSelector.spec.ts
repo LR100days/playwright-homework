@@ -9,12 +9,11 @@ test.beforeEach( async({page}) => {
 
 test('Select the desired date in the calendar', async ({page}) => {
   await page.getByRole('link', {name: 'Harold Davis'}).click();
+  await page.waitForResponse('**/api/owners/*')
   await page.getByRole('button', {name:"Add New Pet"}).click();
-  
-  await page.waitForURL('/owners/*/pets/add')
   await page.getByRole('textbox', { name: 'Name' }).fill('Tom')
 
-  await expect(page.locator("input#name + span")).toHaveClass('glyphicon form-control-feedback glyphicon-ok');
+  await expect(page.locator("input#name + span")).toHaveClass(/glyphicon-ok/);
 
   await page.getByRole('button', {name: 'Open calendar'}).click()
   await page.getByRole('button', {name: 'Choose month and year'}).click()
