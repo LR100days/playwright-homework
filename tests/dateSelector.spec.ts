@@ -11,20 +11,20 @@ test('Select the desired date in the calendar', async ({page}) => {
   await page.getByRole('link', {name: 'Harold Davis'}).click();
   await page.getByRole('button', {name:"Add New Pet"}).click();
   
-  await page.getByRole('textbox', { name: 'Name' }).click()
+  await page.waitForURL('/owners/*/pets/add')
   await page.getByRole('textbox', { name: 'Name' }).fill('Tom')
-  await expect(page.getByRole('textbox', { name: 'Name' })).toHaveClass('form-control ng-untouched ng-dirty ng-valid')
-  
-  await page.getByRole('button', {name: 'Open calendar'}).click()
 
-  await page.locator('.mdc-button__label').first().click() // year button
+  await expect(page.locator("input#name + span")).toHaveClass('glyphicon form-control-feedback glyphicon-ok');
+
+  await page.getByRole('button', {name: 'Open calendar'}).click()
+  await page.getByRole('button', {name: 'Choose month and year'}).click()
+
   await page.getByRole('button', { name: 'Previous 24 years' }).click()
   await page.getByText('2014').click()
   await page.getByText('MAY').click()
   await page.getByText('2', {exact: true}).click()
   await expect(page.locator('[name="birthDate"]')).toHaveValue('2014/05/02')
 
-  await page.locator('#type').click()
   await page.locator('#type').selectOption('dog')
   await page.getByRole('button', {name: 'Save Pet'}).click()
 
@@ -63,10 +63,9 @@ test('Select the dates of visits and validate dates order.', async ({page}) => {
   let selectedDateField = page.locator('input[name="date"]')
   await expect(selectedDateField).toHaveValue(datetoAssert)
 
-  await page.locator('#description').click()
   await page.locator('#description').fill('dermatologists visit')
   await page.getByRole('button', {name: 'Add Visit'}).click()
-  await page.waitForURL('https://petclinic.bondaracademy.com/owners/674')
+  await page.waitForURL('/owners/*')
 
 // Verify that visit for today is shown in the Visits table
   const todayVisitDate = `${expectedYear}-${expectedMonth}-${expectedDate}`
@@ -79,13 +78,12 @@ test('Select the dates of visits and validate dates order.', async ({page}) => {
   await expect(page.getByRole('heading')).toHaveText('New Visit')
 
 // Add new visit, 45 days back from today
-  let newDate = new Date()
-  newDate.setDate(newDate.getDate() - 45)
+  date.setDate(date.getDate() - 45)
 
-  const newExpectedDayToClick = newDate.getDate().toString()
-  const newExpectedDayToAssert = newDate.toLocaleString('En-US', {day: '2-digit'})
-  const newExpectedMonth = newDate.toLocaleString('En-US', {month : '2-digit'})
-  const newExpectedYear = newDate.getFullYear()
+  const newExpectedDayToClick = date.getDate().toString()
+  const newExpectedDayToAssert = date.toLocaleString('En-US', {day: '2-digit'})
+  const newExpectedMonth = date.toLocaleString('En-US', {month : '2-digit'})
+  const newExpectedYear = date.getFullYear()
   const newDatetoAssert = `${newExpectedYear}/${newExpectedMonth}/${newExpectedDayToAssert}`
 
   await page.getByRole('button', {name: 'Open calendar'}).click()
@@ -100,10 +98,9 @@ test('Select the dates of visits and validate dates order.', async ({page}) => {
   await page.getByText(newExpectedDayToClick, {exact: true}).click()
   await expect(selectedDateField).toHaveValue(newDatetoAssert)
 
-  await page.locator('#description').click()
   await page.locator('#description').fill('massage therapy')
   await page.getByRole('button', {name: 'Add Visit'}).click()
-  await page.waitForURL('https://petclinic.bondaracademy.com/owners/674')
+  await page.waitForURL('owners/*')
 
 // Verify that visit for 45 days from today is shown in the Visits table in chronological order
   let firstVisitDateText = firstVisitDateCell.innerText()
