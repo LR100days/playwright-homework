@@ -1,10 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { NavigationPage } from '../page_objects/navigationPage'
 
 test.beforeEach( async({page}) => {
   await page.goto('/')
-  await page.getByRole('button', {name:"Owners"}).click();
-  await page.getByRole('link', {name:"Search"}).click();
-  await expect(page.getByRole('heading')).toHaveText('Owners')
+  const navigateTo = new NavigationPage(page)
+  await navigateTo.ownersPage()
 })
 
 test('Select the desired date in the calendar', async ({page}) => {
