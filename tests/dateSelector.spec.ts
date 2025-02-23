@@ -1,10 +1,10 @@
 import { test, expect } from '@playwright/test';
-import { NavigationPage } from '../page_objects/navigationPage'
+import { PageManager } from '../page_objects/pageManager';
 
 test.beforeEach( async({page}) => {
   await page.goto('/')
-  const navigateTo = new NavigationPage(page)
-  await navigateTo.ownersPage()
+  const pm = new PageManager(page)
+  await pm.navigateTo().ownersPage()
 })
 
 test('Select the desired date in the calendar', async ({page}) => {

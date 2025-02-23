@@ -1,10 +1,10 @@
 import { test, expect } from '@playwright/test';
-import { NavigationPage } from '../page_objects/navigationPage'
+import { PageManager } from '../page_objects/pageManager';
 
 test.beforeEach( async({page}) => {
   await page.goto('/');
-  const navigateTo = new NavigationPage(page)
-  await navigateTo.petTypesPage()
+  const pm = new PageManager(page)
+  await pm.navigateTo().petTypesPage()
 })
 
 test.describe("Interacting with Input Fields practice", async () => {
@@ -13,7 +13,7 @@ test.describe("Interacting with Input Fields practice", async () => {
         await page.getByRole('row', { name: 'cat' }).getByRole('button', {name: 'Edit'}).click();
 
         await expect(page.getByRole('heading')).toHaveText('Edit Pet Type');
-        const nameField = page.getByRole('textbox');
+        const nameField = page.locator('#name');
         await nameField.click();
         await nameField.clear();
         await nameField.fill('rabbit');

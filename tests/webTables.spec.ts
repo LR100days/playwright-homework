@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { NavigationPage } from '../page_objects/navigationPage'
+import { PageManager } from '../page_objects/pageManager';
 
 test.beforeEach( async({page}) => {
   await page.goto('/')
@@ -7,8 +7,8 @@ test.beforeEach( async({page}) => {
 
 test.describe("Owners table practice", async () => {
     test.beforeEach( async({page}) => {
-        const navigateTo = new NavigationPage(page)
-        await navigateTo.ownersPage()
+        const pm = new PageManager(page)
+        await pm.navigateTo().ownersPage()
       })
 
         test('Validate the pet name city of the owner', async ({page}) => {
@@ -65,8 +65,8 @@ test.describe("Owners table practice", async () => {
 })
 
 test('Validate specialty update', async ({page}) => {
-    const navigateTo = new NavigationPage(page)
-    await navigateTo.veterinariansPage()
+    const pm = new PageManager(page)
+    await pm.navigateTo().veterinariansPage()
 
 // Verify initial target Veterinarian speciality
     const rafaelOrtegaRow = page.getByRole('row', {name:"Rafael Ortega"})
@@ -93,7 +93,7 @@ test('Validate specialty update', async ({page}) => {
 
     await expect(secondSpecialtyRow.locator('td input')).toHaveValue('dermatology');
 
-    await navigateTo.veterinariansPage()
+    await pm.navigateTo().veterinariansPage()
 
     await expect(rafaelOrtegaSpecialtyColumn).toHaveText("dermatology")
     
@@ -109,7 +109,7 @@ test('Validate specialty update', async ({page}) => {
 
     await expect(secondSpecialtyRow.locator('td input')).toHaveValue('surgery');
 
-    await navigateTo.veterinariansPage()
+    await pm.navigateTo().veterinariansPage()
 
     await expect(rafaelOrtegaSpecialtyColumn).toHaveText("surgery")
 
@@ -136,10 +136,8 @@ test('Validate specialty lists', async ({page}) => {
     }
 
 // Edit speciality for target veterinarian (targetVet)
-    const navigateTo = new NavigationPage(page)
-    await navigateTo.veterinariansPage()
-    // await page.getByRole('button', {name:"Veterinarians"}).click();
-    // await page.getByRole('link', {name:"All"}).click();
+    const pm = new PageManager(page)
+    await pm.navigateTo().veterinariansPage()
    
     const sharonJenkinsRow = page.getByRole('row', {name:"Sharon Jenkins"})
     await sharonJenkinsRow.getByRole('button', {name:"Edit"}).click();
@@ -168,7 +166,7 @@ test('Validate specialty lists', async ({page}) => {
 // Delete newly added speciality from the Specialitis list and verify that deleted speciality is also removed for targetVet 
     await page.getByRole('link', {name:"Specialties"}).click();
     await page.getByRole('row', {name: 'oncology'}).getByRole('button', {name:"Delete"}).click()
-    await navigateTo.veterinariansPage()
+    await pm.navigateTo().veterinariansPage()
 
     await expect(specialitysharonJenkins).toBeEmpty()
 

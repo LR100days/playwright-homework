@@ -1,10 +1,10 @@
 import { test, expect } from '@playwright/test';
-import { NavigationPage } from '../page_objects/navigationPage'
+import { PageManager } from '../page_objects/pageManager';
 
 test('Add and delete pet type', async ({page}) => {
     await page.goto('/');
-    const navigateTo = new NavigationPage(page)
-    await navigateTo.petTypesPage()
+    const pm = new PageManager(page)
+    await pm.navigateTo().petTypesPage()
 
     await page.getByRole('button', {name:" Add "}).click();
     await expect(page.getByRole('heading').last()).toHaveText('New Pet Type');
