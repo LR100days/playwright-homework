@@ -2,6 +2,7 @@ import { Page, expect } from '@playwright/test';
 import { NavigationPage } from '../page_objects/navigationPage';
 //import { OwnerInformationPage } from './ownerInformationPage';
 import { VeterinariansPage } from './veterinariansPage';
+import { PetTypesPage } from './petTypesPage';
 
 
 export class PageManager{
@@ -9,6 +10,7 @@ export class PageManager{
     private readonly page: Page
     private readonly navigationPage: NavigationPage
     private readonly veterinariansPage: VeterinariansPage
+    private readonly petTypesPage: PetTypesPage
 
     //private readonly ownerInformationPage: OwnerInformationPage
 
@@ -16,6 +18,7 @@ export class PageManager{
         this.page = page
         this.navigationPage = new NavigationPage(this.page)
         this.veterinariansPage = new VeterinariansPage(this.page)
+        this.petTypesPage = new PetTypesPage(this.page)
 
         //this.ownerInformationPage = new OwnerInformationPage(this.page)
     }
@@ -27,4 +30,9 @@ export class PageManager{
     onVeterinariansPage(){
         return this.veterinariansPage
     }
+
+    onPetTypePage(){
+        return this.petTypesPage
+    }
+
 }
