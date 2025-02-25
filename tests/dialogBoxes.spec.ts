@@ -10,6 +10,6 @@ test('Add and delete pet type', async ({page}) => {
 
     const lastRowInTable = page.locator('tr td input').last();
     await expect(lastRowInTable).toHaveValue('pig');
-    await pm.onPetTypePage().deleteThePreviouslyCreatedPetType()
+    await pm.onPetTypePage().deleteTheLastPetTypeInThePetsTable()
     await expect(lastRowInTable).not.toHaveValue('pig');
 })
