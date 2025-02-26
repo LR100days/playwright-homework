@@ -37,64 +37,34 @@ test('Select the desired date in the calendar', async ({page}) => {
 });
 
 test('Select the dates of visits and validate dates order.', async ({page}) => {
+  
   await page.getByRole('link', {name: 'Jean Coleman'}).click();
   const petSamanthaTable= page.locator(".dl-horizontal", { hasText: "Samantha" })
-
   await petSamanthaTable.getByRole('button', {name: "Add Visit"}).click()
   await expect(page.getByRole('heading')).toHaveText('New Visit')
 
   const petTableAllColumnsForSamanthatRow = page.locator('.table-striped').getByRole('row').locator('td')
   await expect(petTableAllColumnsForSamanthatRow.first()).toHaveText('Samantha')
   await expect(petTableAllColumnsForSamanthatRow.last()).toHaveText('Jean Coleman')
-   
-// Add new visit for today 
-  let date = new Date()
-  date.setDate(date.getDate())
-
-  const expectedDate = date.getDate().toString()
-  const expectedMonth = date.toLocaleString('En-US', {month : '2-digit'})
-  const expectedYear = date.getFullYear()
-  const datetoAssert = `${expectedYear}/${expectedMonth}/${expectedDate}`
-
-  await page.getByRole('button', {name: 'Open calendar'}).click()
-  await page.getByText(expectedDate, {exact: true}).click()
-
-  let selectedDateField = page.locator('input[name="date"]')
-  await expect(selectedDateField).toHaveValue(datetoAssert)
+  
+  const pm = new PageManager(page)
+  const todayVisitDateIsSelected = await pm.onOwnerInformationPage().selectDateInTheCalendarOnNewVisitPageToBeToday()
+  const selectedDateField = page.locator('input[name="date"]')
 
   await page.locator('#description').fill('dermatologists visit')
   await page.getByRole('button', {name: 'Add Visit'}).click()
   await page.waitForURL('/owners/*')
 
 // Verify that visit for today is shown in the Visits table
-  const todayVisitDate = `${expectedYear}-${expectedMonth}-${expectedDate}`
   const samanthaAllVisitsTable = page.locator(".table-condensed").last()
   const firstVisitDateCell = samanthaAllVisitsTable.locator("tr td").first()
-  
-  await expect(firstVisitDateCell).toHaveText(todayVisitDate);
+  await expect(firstVisitDateCell).toHaveText(todayVisitDateIsSelected);
 
   await petSamanthaTable.getByRole('button', {name: "Add Visit"}).click()
   await expect(page.getByRole('heading')).toHaveText('New Visit')
 
-// Add new visit, 45 days back from today
-  date.setDate(date.getDate() - 45)
+  const newDatetoAssert = await pm.onOwnerInformationPage().selectDesiredDateInTheCalendarOnNewVisitPageToBeDaysBack(45)
 
-  const newExpectedDayToClick = date.getDate().toString()
-  const newExpectedDayToAssert = date.toLocaleString('En-US', {day: '2-digit'})
-  const newExpectedMonth = date.toLocaleString('En-US', {month : '2-digit'})
-  const newExpectedYear = date.getFullYear()
-  const newDatetoAssert = `${newExpectedYear}/${newExpectedMonth}/${newExpectedDayToAssert}`
-
-  await page.getByRole('button', {name: 'Open calendar'}).click()
-  let calendarMonthAndYear = await page.locator(".mat-calendar-period-button").textContent()
-  const expectedMonthAndYear = `${newExpectedMonth} ${newExpectedYear}`
-
-  while(!calendarMonthAndYear?.includes(expectedMonthAndYear)){
-    await page.getByRole('button', {name: 'Previous month'}).click()
-    calendarMonthAndYear = await page.locator(".mat-calendar-period-button").textContent()
-    }
-
-  await page.getByText(newExpectedDayToClick, {exact: true}).click()
   await expect(selectedDateField).toHaveValue(newDatetoAssert)
 
   await page.locator('#description').fill('massage therapy')
