@@ -5,6 +5,7 @@ import { OwnerInformationPage } from './ownerInformationPage';
 import { VeterinariansPage } from './veterinariansPage';
 import { PetTypesPage } from './petTypesPage';
 import { PetDetailsPage } from './petDetailsPage';
+import { SpecialitiesPage } from './specialitiesPage';
 
 
 export class PageManager{
@@ -16,6 +17,7 @@ export class PageManager{
     private readonly petDetailsPage: PetDetailsPage
     private readonly ownersPage: OwnersPage
     private readonly ownerInformationPage: OwnerInformationPage
+    private readonly specialitiesPage: SpecialitiesPage
 
     constructor(page: Page){
         this.page = page
@@ -25,6 +27,7 @@ export class PageManager{
         this.petDetailsPage = new PetDetailsPage(this.page)
         this.ownersPage = new OwnersPage(this.page)
         this.ownerInformationPage = new OwnerInformationPage(this.page)
+        this.specialitiesPage = new SpecialitiesPage(this.page)
     }
 
     navigateTo(){
@@ -49,5 +52,9 @@ export class PageManager{
     
     onOwnerInformationPage(){
         return this.ownerInformationPage
+    }
+
+    onMainSpecialitiesPage(){
+        return this.specialitiesPage
     }
 }

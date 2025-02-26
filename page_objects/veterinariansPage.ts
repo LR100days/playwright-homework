@@ -18,7 +18,7 @@ export class VeterinariansPage {
     }
 
     /**
-     * Selects or Unselects all specialties checkboxes from the Specialities dropdown list and verifies checkboxes state
+     * Selects or Unselects all vet specialties checkboxes from the Specialities dropdown list and verifies checkboxes state
      * @param checkboxesState - should be boolean (true or false)
      */
     async setAllSpecialitiesCheckboxesInSpecialitiesDropdownTo(checkboxesState: boolean){
@@ -33,6 +33,11 @@ export class VeterinariansPage {
             }     
         }
     }
- 
+
+    async inSpecialitiesDropdownSelectSpecialityCheckbox(checkboxOption: string){
+        await this.page.getByRole('checkbox', {name: checkboxOption}).check()
+        expect(await this.page.getByRole('checkbox', {name: checkboxOption}).isChecked()).toBeTruthy()
+        await this.page.locator('.dropdown-display').click() // to close the dropdown
+    } 
 }
 

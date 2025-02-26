@@ -23,21 +23,11 @@ test.describe("Owners table practice", async () => {
         })
 
         test('Validate search by Last Name', async ({page}) => {
-            const lastNameInputField = page.getByRole('textbox')
-            const lastNamesForTest = ['Black', 'Davis', 'Es', 'Playwright']
-
-            for(let lastname of lastNamesForTest){
-                await lastNameInputField.clear();
-                await lastNameInputField.fill(lastname);
-                await page.getByRole('button', {name: 'Find Owner'}).click()
-            
-                if(lastname == 'Playwright'){
-                    await expect(page.locator('.xd-container div').last()).toHaveText('No owners with LastName starting with "Playwright"')
-                } else {
-                    await page.waitForResponse(`https://petclinic-api.bondaracademy.com/petclinic/api/owners?lastName=${lastname}`);
-                    await expect(page.getByRole('row').locator('td').first()).toContainText(lastname)
-                }
-            } 
+            const pm = new PageManager(page)
+            await pm.onOwnersPage().searchByOwnerName('Black')
+            await pm.onOwnersPage().searchByOwnerName('Davis')
+            await pm.onOwnersPage().searchByOwnerName('Es')
+            await pm.onOwnersPage().searchByOwnerName('Playwright')
         })
 
         test('Validate phone number and pet name on the Owner Information page', async ({page}) => {
@@ -73,20 +63,15 @@ test('Validate specialty update', async ({page}) => {
     const rafaelOrtegaSpecialtyColumn = rafaelOrtegaRow.locator('td').nth(1)
     await expect(rafaelOrtegaSpecialtyColumn).toHaveText("surgery")
 
-// Navigate to the Specialties list
-    await page.getByRole('link', {name:'Specialties'}).click()
-    await expect(page.getByRole('heading')).toHaveText('Specialties')
+    await pm.navigateTo().specialitiesPage()
 
 // Edit speciality from 'surgery' to 'dermatology' in the list of specialties
     const secondSpecialtyRow = page.getByRole('row').nth(2)
     await secondSpecialtyRow.getByRole('button', { name: 'Edit' }).click()
-
     await expect(page.getByRole('heading')).toHaveText('Edit Specialty')
 
-    const specialityInputField = page.getByRole('textbox')
-    await specialityInputField.click()
-    await specialityInputField.clear()
-    await specialityInputField.fill('dermatology')
+    await pm.onMainSpecialitiesPage().editMainSpecialityTo('dermatology')
+
     await page.getByRole('button', { name: 'Update' }).click()
 
 // Verify that speciality is updated in the Speciality list and for the target Veterinarian
@@ -94,69 +79,41 @@ test('Validate specialty update', async ({page}) => {
     await expect(secondSpecialtyRow.locator('td input')).toHaveValue('dermatology');
 
     await pm.navigateTo().veterinariansPage()
-
     await expect(rafaelOrtegaSpecialtyColumn).toHaveText("dermatology")
     
 // Navigate to SPECIALTIES page, revert the changes renaming "dermatology" back to "surgery"
-    await page.getByRole('link', {name:'Specialties'}).click()
-    await expect(page.getByRole('heading')).toHaveText('Specialties')
-
+    await pm.navigateTo().specialitiesPage()
     await secondSpecialtyRow.getByRole('button', { name: 'Edit' }).click()
-    await specialityInputField.click()
-    await specialityInputField.clear()
-    await specialityInputField.fill('surgery')
-    await page.getByRole('button', { name: 'Update' }).click()
+  
+    await pm.onMainSpecialitiesPage().editMainSpecialityTo('surgery')
 
+    await page.getByRole('button', { name: 'Update' }).click()
     await expect(secondSpecialtyRow.locator('td input')).toHaveValue('surgery');
 
     await pm.navigateTo().veterinariansPage()
-
     await expect(rafaelOrtegaSpecialtyColumn).toHaveText("surgery")
 
 })
 
 test('Validate specialty lists', async ({page}) => {
-    await page.getByRole('link', {name:"Specialties"}).click();
-    await page.getByRole('button', {name:"Add"}).click();
-
-    const addSpecialityField = page.getByRole('textbox').last()
-    await addSpecialityField.click()
-    await addSpecialityField.fill('oncology')
+    const pm = new PageManager(page)
+    await pm.navigateTo().specialitiesPage()
+    await pm.onMainSpecialitiesPage().addNewMainSpeciality('oncology')
     await page.getByRole('button', {name:"Save"}).click();
-
     await page.waitForResponse('https://petclinic-api.bondaracademy.com/petclinic/api/specialties')
 
-// Extract all specialities in the list
-    const allRows = page.getByRole('row').filter({has: page.getByRole('button', {name:"Edit"})})
-    let allSpecialities: string[] = [];
+    let allSpecialities = await pm.onMainSpecialitiesPage().createListOfAllMainSpecialitiesTable()
 
-    for(let row of await allRows.all()){
-        let spec = await row.locator('td input').inputValue()
-        allSpecialities.push(spec)
-    }
-
-// Edit speciality for target veterinarian (targetVet)
-    const pm = new PageManager(page)
+// Edit speciality for target veterinarian sharonJenkins
     await pm.navigateTo().veterinariansPage()
    
     const sharonJenkinsRow = page.getByRole('row', {name:"Sharon Jenkins"})
     await sharonJenkinsRow.getByRole('button', {name:"Edit"}).click();
   
-    await page.locator('.dropdown-display').click()
-
-    const dropdownOptions = page.locator('.dropdown-content div label')
-    let specialitiesOptions: string[] = []
-
-    for(let option of await dropdownOptions.all()){
-        let optionValue = await option.innerText()
-        specialitiesOptions.push(optionValue)
-    }
-    
-    expect(specialitiesOptions).toEqual(allSpecialities)
+    let dropdownSpecialitiesOptions = await pm.onMainSpecialitiesPage().createListOfAllMainSpecialitiesInDropdownOptions()
+    expect(dropdownSpecialitiesOptions).toEqual(allSpecialities)
    
-    await page.getByRole('checkbox', {name: 'oncology'}).check()
-    expect(await page.getByRole('checkbox', {name: 'oncology'}).isChecked()).toBeTruthy()
-    await page.locator('.dropdown-display').click() // to close the dropdown
+    await pm.onVeterinariansPage().inSpecialitiesDropdownSelectSpecialityCheckbox('oncology')
     await page.getByRole('button', {name:"Save Vet"}).click();
 
 // Check updated speciality for target Vet
@@ -164,7 +121,7 @@ test('Validate specialty lists', async ({page}) => {
     await expect(specialitysharonJenkins).toHaveText('oncology')
 
 // Delete newly added speciality from the Specialitis list and verify that deleted speciality is also removed for targetVet 
-    await page.getByRole('link', {name:"Specialties"}).click();
+    await pm.navigateTo().specialitiesPage()
     await page.getByRole('row', {name: 'oncology'}).getByRole('button', {name:"Delete"}).click()
     await pm.navigateTo().veterinariansPage()
 
