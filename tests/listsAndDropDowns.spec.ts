@@ -29,7 +29,7 @@ test.describe("Lists and dropdowns assignment", async () => {
 
         await page.getByRole('button', {name:"Update Pet"}).click()
 
-        await pm.onPetDetailsPage().validateRosyPetTypeOnOwnerInfoPageToBe('bird')
+        await pm.onOwnerInformationPage().validateRosyPetTypeOnOwnerInfoPageToBe('bird')
    
     // Revert the selection of the pet type "bird" for Rosy pet to its initial value "dog" and verify pet type
         await pm.onPetDetailsPage().editPetWithName('Rosy')
@@ -38,6 +38,6 @@ test.describe("Lists and dropdowns assignment", async () => {
         
         await page.getByRole('button', {name:"Update Pet"}).click();
 
-        await pm.onPetDetailsPage().validateRosyPetTypeOnOwnerInfoPageToBe('dog')
+        await pm.onOwnerInformationPage().validateRosyPetTypeOnOwnerInfoPageToBe('dog')
     });
 })

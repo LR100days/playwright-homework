@@ -52,13 +52,13 @@ export class PetDetailsPage {
         await expect(petTypeDropdownMenu).toHaveValue(newOption)
     }
     
-    /**
-     * Verifies that newly selected pet type is shown on owner details page
-     * @param expectedPetType - newly selected pet type
-     */
-    async validateRosyPetTypeOnOwnerInfoPageToBe(expectedPetType: string){
-        const rosyPetTypeOnOwnerInfoPage = this.page.locator(".dl-horizontal", { hasText: "Rosy" }).locator('dd').last()
-        await expect(rosyPetTypeOnOwnerInfoPage).toHaveText(expectedPetType)
-    }
+    // /**
+    //  * Verifies that newly selected pet type is shown on owner details page
+    //  * @param expectedPetType - newly selected pet type
+    //  */
+    // async validateRosyPetTypeOnOwnerInfoPageToBe(expectedPetType: string){
+    //     const rosyPetTypeOnOwnerInfoPage = this.page.locator(".dl-horizontal", { hasText: "Rosy" }).locator('dd').last()
+    //     await expect(rosyPetTypeOnOwnerInfoPage).toHaveText(expectedPetType)
+    // }
 }
 
