@@ -39,5 +39,9 @@ export class VeterinariansPage {
         expect(await this.page.getByRole('checkbox', {name: checkboxOption}).isChecked()).toBeTruthy()
         await this.page.locator('.dropdown-display').click() // to close the dropdown
     } 
+
+    async clickEditButtonForVet(vetName: string){
+        await this.page.locator('tr', {hasText: vetName}).getByRole('button',{name: "Edit Vet"}).click();
+    }
 }
 

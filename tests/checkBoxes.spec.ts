@@ -9,8 +9,8 @@ test.beforeEach( async({page}) => {
 
 test.describe("Checkboxes assignment", async () => {
   test('Validate selected specialties', async ({page}) => {
-    await page.locator('tr', {hasText: 'Helen Leary'}).getByRole('button',{name: "Edit Vet"}).click();
     const pm = new PageManager(page)
+    await pm.onVeterinariansPage().clickEditButtonForVet('Helen Leary')
     await pm.onVeterinariansPage().checkVetSpecialityIs('radiology')
 
     const radiologyCheckbox = page.getByRole('checkbox', {name: 'radiology'})
@@ -30,16 +30,16 @@ test.describe("Checkboxes assignment", async () => {
   });
 
   test('Select all specialties', async ({page}) => {
-    await page.locator('tr', {hasText: 'Rafael Ortega'}).getByRole('button',{name: "Edit Vet"}).click();
     const pm = new PageManager(page)
+    await pm.onVeterinariansPage().clickEditButtonForVet('Rafael Ortega')
     await pm.onVeterinariansPage().checkVetSpecialityIs('surgery')
     await pm.onVeterinariansPage().setAllSpecialitiesCheckboxesInSpecialitiesDropdownTo(true)
     await pm.onVeterinariansPage().checkVetSpecialityIs('surgery, radiology, dentistry')
   });
 
   test('Unselect all specialties', async ({page}) => {
-    await page.locator('tr', {hasText: 'Linda Douglas'}).getByRole('button',{name: "Edit Vet"}).click();
     const pm = new PageManager(page)
+    await pm.onVeterinariansPage().clickEditButtonForVet('Linda Douglas')
     await pm.onVeterinariansPage().checkVetSpecialityIs('dentistry, surgery')
     await pm.onVeterinariansPage().setAllSpecialitiesCheckboxesInSpecialitiesDropdownTo(false)
     await expect(page.locator('.selected-specialties')).toBeEmpty() 

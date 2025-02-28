@@ -6,8 +6,9 @@ export class OwnersPage {
         this.page = page
     }
 
-    async selectOwnerFromOwnersTable(ownerName: string){
+    async selectOwnerFromOwnersTableByName(ownerName: string){
         await this.page.getByRole('link', {name: ownerName }).click();
+        await this.page.waitForResponse('**/api/owners/*')
         await expect(this.page.locator(".ownerFullName")).toHaveText(ownerName)
     }
 
