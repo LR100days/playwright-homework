@@ -10,42 +10,41 @@ test.beforeEach( async({page}) => {
 test.describe("Interacting with Input Fields practice", async () => {
     test('Update pet type', async ({page}) => {
         const pm = new PageManager(page)
-        await pm.onPetTypePage().petTypeToBeEdited('cat')
-        await pm.onPetTypePage().clearNameFieldAndEnterNewPetTypeName('rabbit')
-        await page.getByRole('button', {name:"Update"}).click(); 
-        const firstPetInTheList = page.locator('[id="0"]');
-        await expect(firstPetInTheList).toHaveValue('rabbit');
+        await pm.onPetTypePage().clickEditbuttonForPetType('cat')
+        await pm.onPetTypePage().enterNewPetTypeName('rabbit')
+        await pm.onPetTypePage().confirmPetTypeNameUpdating()
+        await pm.onPetTypePage().validatePetTypeValueByRowIndex('0','rabbit')
 
         // Change the pet type name back from "rabbit" to "cat"
-        await pm.onPetTypePage().petTypeToBeEdited('rabbit')
-        await pm.onPetTypePage().clearNameFieldAndEnterNewPetTypeName('cat')
-        await page.getByRole('button', {name:"Update"}).click();
-        await expect(firstPetInTheList).toHaveValue("cat")
+        await pm.onPetTypePage().clickEditbuttonForPetType('rabbit')
+        await pm.onPetTypePage().enterNewPetTypeName('cat')
+        await pm.onPetTypePage().confirmPetTypeNameUpdating()
+        await pm.onPetTypePage().validatePetTypeValueByRowIndex('0','cat')
     });
 
     test('Cancel pet type update', async ({page}) => {
         const pm = new PageManager(page)
-        await pm.onPetTypePage().petTypeToBeEdited('dog')
-        await pm.onPetTypePage().clearNameFieldAndEnterNewPetTypeName('mouse')
-        await page.getByRole('button', {name:"Cancel"}).click()
-        await expect(page.locator('[id="1"]')).toHaveValue('dog');
+        await pm.onPetTypePage().clickEditbuttonForPetType('dog')
+        await pm.onPetTypePage().enterNewPetTypeName('mouse')
+        await pm.onPetTypePage().clickCancelButtonForPetTypeUpdating()
+        await pm.onPetTypePage().validatePetTypeValueByRowIndex('1','dog')
     });
 
     test('Pet type name is required validation', async ({page}) => {
         const pm = new PageManager(page)
-        await pm.onPetTypePage().petTypeToBeEdited('lizard')
+        await pm.onPetTypePage().clickEditbuttonForPetType('lizard')
 
         // On the Edit Pet Type page, verify validation message when Name field is empty
         await pm.onPetTypePage().clearNameField()
-        await expect(page.locator('.help-block')).toHaveText('Name is required');
+        await pm.onPetTypePage().verifyValidationMessageForEmptyPetTypeNameFieldIs('Name is required')
 
         // Verify that "Edit Pet Type" page is still displayed after submitting empty value
-        await page.getByRole('button', {name:"Update"}).click()
-        await expect(page.getByRole('heading')).toHaveText('Edit Pet Type')
-        await page.getByRole('button', {name:"Cancel"}).click()
+        await pm.onPetTypePage().confirmPetTypeNameUpdating()
+        await pm.onPetTypePage().verifyPageHeadingIs('Edit Pet Type')
+        await pm.onPetTypePage().clickCancelButtonForPetTypeUpdating()
 
         // Verify that "Pet Types" page is displayed when changes are cancelled
-        await expect(page.getByRole('heading')).toHaveText('Pet Types')
+        await pm.onPetTypePage().verifyPageHeadingIs('Pet Types')
     });
 
 })

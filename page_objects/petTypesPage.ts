@@ -36,7 +36,7 @@ export class PetTypesPage {
      * Opens Edit Pet Type page
      * @param petType - pet type name that needs to be changed to new value.
      */
-    async petTypeToBeEdited(petType: string){
+    async clickEditbuttonForPetType(petType: string){
         await this.page.getByRole('row', { name: petType }).getByRole('button', {name: 'Edit'}).click();
         await expect(this.page.getByRole('heading')).toHaveText('Edit Pet Type');
     }
@@ -45,10 +45,10 @@ export class PetTypesPage {
      * Clears Name input field and enters a new desired pet type value.
      * @param newPetType - desired Pet Type Value to be saved
      */
-    async clearNameFieldAndEnterNewPetTypeName(newPetType: string){
+    async enterNewPetTypeName(newPetType: string){
+        await this.clearNameField()
         const nameField = this.page.locator('#name');
-        await nameField.click();
-        await nameField.clear();
+        await nameField.click()
         await nameField.fill(newPetType);
     }
 
@@ -60,8 +60,28 @@ export class PetTypesPage {
 
     async validateLastRowPetType(petType: string){
         const lastRowInTable = this.page.locator('tr td input').last();
-        await expect(lastRowInTable).toHaveValue('pig');
+        await expect(lastRowInTable).toHaveValue(petType);
         return lastRowInTable
+    }
+
+    async validatePetTypeValueByRowIndex(rowIndex: string, petType: string){
+        await expect(this.page.locator(`[id="${rowIndex}"]`)).toHaveValue(petType);
+    }
+
+    async clickCancelButtonForPetTypeUpdating(){
+        await this.page.getByRole('button', {name:"Cancel"}).click()
+    }
+
+    async verifyValidationMessageForEmptyPetTypeNameFieldIs(message: string){
+        await expect(this.page.locator('.help-block')).toHaveText(message);
+    }
+
+    async verifyPageHeadingIs(heading: string){
+        await expect(this.page.getByRole('heading')).toHaveText(heading)
+    }
+
+    async confirmPetTypeNameUpdating(){
+        await this.page.getByRole('button', {name:"Update"}).click();
     }
 
 }
