@@ -25,9 +25,10 @@ export class OwnerInformationPage {
         date.setDate(date.getDate())
 
         const expectedDate = date.getDate().toString()
+        const expectedDate2digits = date.toLocaleString('En-US', {day : '2-digit'})
         const expectedMonth = date.toLocaleString('En-US', {month : '2-digit'})
         const expectedYear = date.getFullYear()
-        const datetoAssert = `${expectedYear}/${expectedMonth}/${expectedDate}`
+        const datetoAssert = `${expectedYear}/${expectedMonth}/${expectedDate2digits}`
 
         await this.page.getByRole('button', {name: 'Open calendar'}).click()
         await this.page.getByText(expectedDate, {exact: true}).click()
@@ -35,7 +36,7 @@ export class OwnerInformationPage {
         let selectedDateField = this.page.locator('input[name="date"]')
         await expect(selectedDateField).toHaveValue(datetoAssert)
 
-        const todayVisitDate = `${expectedYear}-${expectedMonth}-${expectedDate}`
+        const todayVisitDate = `${expectedYear}-${expectedMonth}-${expectedDate2digits}`
         return todayVisitDate
     }
 
@@ -63,7 +64,10 @@ export class OwnerInformationPage {
           calendarMonthAndYear = await this.page.locator(".mat-calendar-period-button").textContent()
           }
       
-        await this.page.getByText(newExpectedDayToClick, {exact: true}).click()     
+        await this.page.getByText(newExpectedDayToClick, {exact: true}).click()
+        
+        let selectedDateField = this.page.locator('input[name="date"]')
+        await expect(selectedDateField).toHaveValue(newDatetoAssert)
     }
 
     /**
