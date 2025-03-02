@@ -29,6 +29,7 @@ export class PetTypesPage {
             dialog.accept()
             }) 
         await this.page.locator('tr td').last().getByRole('button', {name:"Delete"}).click();
+        
     }
 
     /**
@@ -55,6 +56,12 @@ export class PetTypesPage {
         const nameField = this.page.locator('#name');
         await nameField.click();
         await nameField.clear();
+    }
+
+    async validateLastRowPetType(petType: string){
+        const lastRowInTable = this.page.locator('tr td input').last();
+        await expect(lastRowInTable).toHaveValue('pig');
+        return lastRowInTable
     }
 
 }

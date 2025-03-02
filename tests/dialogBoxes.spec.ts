@@ -7,9 +7,7 @@ test('Add and delete pet type', async ({page}) => {
     await pm.navigateTo().petTypesPage()
     await pm.onPetTypePage().clickAddButtonToOpenPetTypeInputForm()
     await pm.onPetTypePage().addNewPetType("pig")
-
-    const lastRowInTable = page.locator('tr td input').last();
-    await expect(lastRowInTable).toHaveValue('pig');
+    const lastRowInTable = await pm.onPetTypePage().validateLastRowPetType('pig')
     await pm.onPetTypePage().deleteTheLastPetTypeInThePetsTable()
     await expect(lastRowInTable).not.toHaveValue('pig');
 })
