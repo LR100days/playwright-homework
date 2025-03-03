@@ -12,7 +12,7 @@ export class PetDetailsPage {
      * @param petOwner - pet owner, selected for test
      * @param petType - initial pet type for selected pet
      */
-    async validatePetOwnerAndTypeOnEditPetPageToBe(petOwner: string, petType: string){
+    async validatePetOwnerAndPetTypeOnEditPetPageAre(petOwner: string, petType: string){
         
         await expect(this.page.getByRole('heading')).toHaveText('Pet')
         await expect(this.page.locator('#owner_name')).toHaveValue(petOwner)
@@ -44,12 +44,13 @@ export class PetDetailsPage {
      * Selects new pet type option for selected pet
      * @param newOption - select any option from the dropdown list, except of the initial option.
      */
-    async changePetTypeDropdownOptionTo(newOption: string){
+    async updatePetTypeTo(newOption: string){
         const petTypeField = this.page.locator('#type1')
         const petTypeDropdownMenu = this.page.locator('#type')
         await petTypeDropdownMenu.selectOption(newOption)
         await expect(petTypeField).toHaveValue(newOption)
         await expect(petTypeDropdownMenu).toHaveValue(newOption)
+        await this.page.getByRole('button', {name:"Update Pet"}).click()
     }
 }
 

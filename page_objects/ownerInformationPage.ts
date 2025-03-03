@@ -9,11 +9,12 @@ export class OwnerInformationPage {
 
     /**
      * Verifies that newly selected pet type is shown on owner details page
-     * @param expectedPetType - newly selected pet type
+     * @param petName - select pet for which the validation should be performed
+     * @param expectedPetType - expected pet type
      */
-    async validateRosyPetTypeOnOwnerInfoPageToBe(expectedPetType: string){
-        const rosyPetTypeOnOwnerInfoPage = this.page.locator(".dl-horizontal", { hasText: "Rosy" }).locator('dd').last()
-        await expect(rosyPetTypeOnOwnerInfoPage).toHaveText(expectedPetType)
+    async validatePetTypeOnOwnerInfoPage(petName: string, expectedPetType: string){
+        const petTable= this.page.locator(".dl-horizontal", { hasText: petName })
+        await expect(petTable.locator('dd').last()).toHaveText(expectedPetType)
     }
 
     /**
@@ -107,7 +108,7 @@ export class OwnerInformationPage {
         const petTomTable= this.page.locator(".dl-horizontal", { hasText: petName })
         await expect(petTomTable.locator('dd').first()).toHaveText(petName)
         await expect(petTomTable.locator('dd').nth(1)).toHaveText(petBirthDate)
-        await expect(petTomTable.locator('dd').last()).toHaveText(petType)
+        await this.validatePetTypeOnOwnerInfoPage(petName, petType)
     }
 
     async deletePet(petName: string){
