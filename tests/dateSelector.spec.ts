@@ -24,13 +24,13 @@ test('Select the dates of visits and validate dates order.', async ({page}) => {
   await pm.onOwnersPage().selectOwnerFromOwnersTableByName('Jean Coleman')
   await pm.onOwnerInformationPage().openAddVisitFormFor("Samantha", 'Jean Coleman')
   
-  const todayVisitDateIsSelected = await pm.onOwnerInformationPage().selectDateInTheCalendarOnNewVisitPageToBeToday()
+  const todayVisitDateIsSelected = await pm.onPetDetailsPage().selectDateInTheCalendarOnNewVisitPageToBeToday()
   await pm.onOwnerInformationPage().addNewVisitDescription('dermatologists visit')
   await pm.onOwnerInformationPage().confirmNewVisit()
   await pm.onOwnerInformationPage().validateVisitDate(todayVisitDateIsSelected)
  
   await pm.onOwnerInformationPage().openAddVisitFormFor("Samantha", 'Jean Coleman')
-  await pm.onOwnerInformationPage().selectDesiredDateInTheCalendarOnNewVisitPageToBeDaysBack(45)
+  await pm.onPetDetailsPage().selectDesiredDateInTheCalendarOnNewVisitPageToBeDaysBack(45)
   await pm.onOwnerInformationPage().addNewVisitDescription('massage therapy')
   await pm.onOwnerInformationPage().confirmNewVisit()
   await pm.onOwnerInformationPage().validateTwoVisitDatesForPet("Samantha", "dermatologists visit", "massage therapy")
