@@ -51,39 +51,29 @@ test('Validate specialty update', async ({page}) => {
     await pm.navigateTo().veterinariansPage()
 
 // Verify initial target Veterinarian speciality
-    const rafaelOrtegaRow = page.getByRole('row', {name:"Rafael Ortega"})
-    const rafaelOrtegaSpecialtyColumn = rafaelOrtegaRow.locator('td').nth(1)
-    await expect(rafaelOrtegaSpecialtyColumn).toHaveText("surgery")
-
+    await pm.onVeterinariansPage().validateVetSpecialityInVetTable("Rafael Ortega","surgery" )
     await pm.navigateTo().specialitiesPage()
 
 // Edit speciality from 'surgery' to 'dermatology' in the list of specialties
-    const secondSpecialtyRow = page.getByRole('row').nth(2)
-    await secondSpecialtyRow.getByRole('button', { name: 'Edit' }).click()
-    await expect(page.getByRole('heading')).toHaveText('Edit Specialty')
-
+    await pm.onMainSpecialitiesPage().selectEditSpecialityInSpecialitiesTableByRowIndex(2)
     await pm.onMainSpecialitiesPage().editMainSpecialityTo('dermatology')
-
-    await page.getByRole('button', { name: 'Update' }).click()
+    await pm.onMainSpecialitiesPage().confirmSpecialityUpdate()
 
 // Verify that speciality is updated in the Speciality list and for the target Veterinarian
-
-    await expect(secondSpecialtyRow.locator('td input')).toHaveValue('dermatology');
+    await pm.onMainSpecialitiesPage().validateSpecialityValueInSpecialitiesTableByRowIndex(2,"dermatology")
 
     await pm.navigateTo().veterinariansPage()
-    await expect(rafaelOrtegaSpecialtyColumn).toHaveText("dermatology")
-    
+    await pm.onVeterinariansPage().validateVetSpecialityInVetTable("Rafael Ortega","dermatology")
+
 // Navigate to SPECIALTIES page, revert the changes renaming "dermatology" back to "surgery"
     await pm.navigateTo().specialitiesPage()
-    await secondSpecialtyRow.getByRole('button', { name: 'Edit' }).click()
-  
+    await pm.onMainSpecialitiesPage().selectEditSpecialityInSpecialitiesTableByRowIndex(2)
     await pm.onMainSpecialitiesPage().editMainSpecialityTo('surgery')
-
-    await page.getByRole('button', { name: 'Update' }).click()
-    await expect(secondSpecialtyRow.locator('td input')).toHaveValue('surgery');
+    await pm.onMainSpecialitiesPage().confirmSpecialityUpdate()
+    await pm.onMainSpecialitiesPage().validateSpecialityValueInSpecialitiesTableByRowIndex(2,'surgery')
 
     await pm.navigateTo().veterinariansPage()
-    await expect(rafaelOrtegaSpecialtyColumn).toHaveText("surgery")
+    await pm.onVeterinariansPage().validateVetSpecialityInVetTable("Rafael Ortega","surgery" )
 
 })
 
@@ -91,32 +81,26 @@ test('Validate specialty lists', async ({page}) => {
     const pm = new PageManager(page)
     await pm.navigateTo().specialitiesPage()
     await pm.onMainSpecialitiesPage().addNewMainSpeciality('oncology')
-    await page.getByRole('button', {name:"Save"}).click();
-    await page.waitForResponse('https://petclinic-api.bondaracademy.com/petclinic/api/specialties')
 
     let allSpecialities = await pm.onMainSpecialitiesPage().createListOfAllMainSpecialitiesTable()
 
 // Edit speciality for target veterinarian sharonJenkins
     await pm.navigateTo().veterinariansPage()
-   
-    const sharonJenkinsRow = page.getByRole('row', {name:"Sharon Jenkins"})
-    await sharonJenkinsRow.getByRole('button', {name:"Edit"}).click();
+    await pm.onVeterinariansPage().clickEditButtonForVet("Sharon Jenkins")
   
     let dropdownSpecialitiesOptions = await pm.onMainSpecialitiesPage().createListOfAllMainSpecialitiesInDropdownOptions()
     expect(dropdownSpecialitiesOptions).toEqual(allSpecialities)
    
     await pm.onVeterinariansPage().inSpecialitiesDropdownSelectSpecialityCheckbox('oncology')
-    await page.getByRole('button', {name:"Save Vet"}).click();
+    await pm.onVeterinariansPage().clickSaveVetDetails()
 
 // Check updated speciality for target Vet
-    const specialitysharonJenkins = sharonJenkinsRow.locator('td').nth(1)
-    await expect(specialitysharonJenkins).toHaveText('oncology')
+    await pm.onVeterinariansPage().validateVetSpecialityInVetTable("Sharon Jenkins","oncology" )
 
 // Delete newly added speciality from the Specialitis list and verify that deleted speciality is also removed for targetVet 
     await pm.navigateTo().specialitiesPage()
-    await page.getByRole('row', {name: 'oncology'}).getByRole('button', {name:"Delete"}).click()
+    await pm.onMainSpecialitiesPage().deleteSpelialityByName('oncology')
     await pm.navigateTo().veterinariansPage()
-
-    await expect(specialitysharonJenkins).toBeEmpty()
+    await pm.onVeterinariansPage().validateVetSpecialityInVetTable("Sharon Jenkins","empty" )
 
 })

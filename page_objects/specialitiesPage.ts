@@ -17,11 +17,17 @@ export class SpecialitiesPage {
         await specialityInputField.fill(speciality)
     }
 
+    async deleteSpelialityByName(speciality: string){
+        await this.page.getByRole('row', {name: speciality}).getByRole('button', {name:"Delete"}).click()
+    }
+
     async addNewMainSpeciality(newSpeciality: string){
         await this.page.getByRole('button', {name:"Add"}).click();
         const addSpecialityField = this.page.getByRole('textbox').last()
         await addSpecialityField.click()
         await addSpecialityField.fill(newSpeciality)
+        await this.page.getByRole('button', {name:"Save"}).click();
+        await this.page.waitForResponse('https://petclinic-api.bondaracademy.com/petclinic/api/specialties')
     }
     /**
      * Extrats all specialities text from Specialities table.
@@ -53,6 +59,21 @@ export class SpecialitiesPage {
             specialitiesOptionsInDropdown.push(optionValue)
         }
         return specialitiesOptionsInDropdown
+    }
+
+    async selectEditSpecialityInSpecialitiesTableByRowIndex(rowIndex: number){
+        const selectedSpecialtyRow = this.page.getByRole('row').nth(rowIndex)
+        await selectedSpecialtyRow.getByRole('button', { name: 'Edit' }).click()
+        await expect(this.page.getByRole('heading')).toHaveText('Edit Specialty')
+    }
+
+    async validateSpecialityValueInSpecialitiesTableByRowIndex(rowIndex: number, expectedSpeciality: string){
+        const selectedSpecialtyRow = this.page.getByRole('row').nth(rowIndex)
+        await expect(selectedSpecialtyRow.locator('td input')).toHaveValue(expectedSpeciality);
+    }
+
+    async confirmSpecialityUpdate(){
+        await this.page.getByRole('button', { name: 'Update' }).click()
     }
 }
 
