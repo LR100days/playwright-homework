@@ -12,14 +12,14 @@ test.describe("Owners table practice", async () => {
       })
 
         test('Validate the pet name city of the owner', async ({page}) => {
-            const jeffBlackRow = page.getByRole('row', {name: "Jeff Black"})
-            expect(await jeffBlackRow.locator("td").nth(2).textContent()).toEqual('Monona');
-            expect(await jeffBlackRow.locator("td").last().textContent()).toEqual(' Lucky ');
+            const pm = new PageManager(page)
+            await pm.onOwnersPage().validateCityAndPetNameOfOwner("Jeff Black",'Monona', ' Lucky ')
         })
 
         test('Validate owners count of the Madison city', async ({page}) => {
-            await expect(page.getByRole('row', {name: 'Madison'})).toHaveCount(4);
-        
+            const pm = new PageManager(page)
+            const numberOfOwnersInTheCity = await pm.onOwnersPage().countOwnersOfCity('Madison')
+            await expect(numberOfOwnersInTheCity).toHaveCount(4);
         })
 
         test('Validate search by Last Name', async ({page}) => {
@@ -31,25 +31,17 @@ test.describe("Owners table practice", async () => {
         })
 
         test('Validate phone number and pet name on the Owner Information page', async ({page}) => {
-            const ownerForTestRow = page.getByRole('row', {name: "6085552765"})
-            const petName = await ownerForTestRow.locator('td').last().textContent()
-            
-            await ownerForTestRow.getByRole('link').click()
-            await expect(page.getByRole('row', {name: "Telephone"})).toContainText('6085552765')
-            await expect(page.getByRole('table').locator("dd").first()).toHaveText(petName!)
+            const pm = new PageManager(page)
+            const petName = await pm.onOwnersPage().findPetNameByOwnerPhoneNumber('6085552765')
+            await pm.onOwnerInformationPage().validateOwnerPhoneNumberAndPetNameAre('6085552765', petName!)
         })
 
         test('Validate pets of the Madison city', async ({page}) => {
-            const madisonCityRows = page.getByRole('row', {name: 'Madison'})
-            await expect(madisonCityRows).toHaveCount(4);
-            let petsInMadisonCity: string[] = [];
-
-            for(let row of await madisonCityRows.all()){
-                let petName = await row.locator('td').last().innerText()
-                petsInMadisonCity.push(petName.trim())
-            }
-            
-            expect(petsInMadisonCity).toEqual(['Leo', 'George', 'Mulligan', 'Freddy'])
+            const pm = new PageManager(page)
+            const selectedCityRows = await pm.onOwnersPage().countOwnersOfCity('Madison')
+            await expect(selectedCityRows).toHaveCount(4);
+            const petsInSelectedCity = await pm.onOwnersPage().petNamesOfSelectedCity(selectedCityRows)
+            expect(petsInSelectedCity).toEqual(['Leo', 'George', 'Mulligan', 'Freddy'])
         })
 
 })

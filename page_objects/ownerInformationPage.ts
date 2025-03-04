@@ -105,4 +105,11 @@ export class OwnerInformationPage {
         const secondDate = new Date(secondDateValue!);
         expect(firstDate > secondDate).toBeTruthy();
     }
+
+    async validateOwnerPhoneNumberAndPetNameAre(phoneNumber: string, petName: string){
+        
+        await this.page.getByRole('row', {name: phoneNumber}).getByRole('link').click()
+        await expect(this.page.getByRole('row', {name: "Telephone"})).toContainText(phoneNumber)
+        await expect(this.page.getByRole('table').locator("dd").first()).toHaveText(petName!)
+    }
 }
