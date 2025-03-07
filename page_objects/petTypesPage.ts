@@ -40,23 +40,6 @@ export class PetTypesPage {
         await this.page.getByRole('row', { name: petType }).getByRole('button', {name: 'Edit'}).click();
         await expect(this.page.getByRole('heading')).toHaveText('Edit Pet Type');
     }
-    
-    /**
-     * Clears Name input field and enters a new desired pet type value.
-     * @param newPetType - desired Pet Type Value to be saved
-     */
-    async enterNewPetTypeName(newPetType: string){
-        await this.clearNameField()
-        const nameField = this.page.locator('#name');
-        await nameField.click()
-        await nameField.fill(newPetType);
-    }
-
-    async clearNameField(){
-        const nameField = this.page.locator('#name');
-        await nameField.click();
-        await nameField.clear();
-    }
 
     async validateLastRowPetType(petType: string){
         const lastRowInTable = this.page.locator('tr td input').last();
@@ -66,22 +49,6 @@ export class PetTypesPage {
 
     async validatePetTypeValueByRowIndex(rowIndex: string, petType: string){
         await expect(this.page.locator(`[id="${rowIndex}"]`)).toHaveValue(petType);
-    }
-
-    async clickCancelButtonForPetTypeUpdating(){
-        await this.page.getByRole('button', {name:"Cancel"}).click()
-    }
-
-    async verifyValidationMessageForEmptyPetTypeNameFieldIs(message: string){
-        await expect(this.page.locator('.help-block')).toHaveText(message);
-    }
-
-    async verifyPageHeadingIs(heading: string){
-        await expect(this.page.getByRole('heading')).toHaveText(heading)
-    }
-
-    async confirmPetTypeNameUpdating(){
-        await this.page.getByRole('button', {name:"Update"}).click();
     }
 
 }

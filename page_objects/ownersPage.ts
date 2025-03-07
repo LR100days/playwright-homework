@@ -13,7 +13,7 @@ export class OwnersPage {
         await expect(this.page.locator(".ownerFullName")).toHaveText(ownerName)
     }
 
-    async searchByOwnerName(ownerName: string){
+    async searchByOwnerNameAndValidateSearchResult(ownerName: string){
         const lastNameInputField = this.page.getByRole('textbox')
         await lastNameInputField.clear();
         await lastNameInputField.fill(ownerName);

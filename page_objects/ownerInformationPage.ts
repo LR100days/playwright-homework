@@ -73,22 +73,6 @@ export class OwnerInformationPage {
         await expect(petTableAllColumnsForSamanthatRow.last()).toHaveText(petOwner)
     }
 
-    async addNewVisitDescription(description: string){
-        const selectedDateField = this.page.locator('input[name="date"]')
-        await this.page.locator('#description').fill(description)
-    }
-
-    async confirmNewVisit(){
-        await this.page.getByRole('button', {name: 'Add Visit'}).click()
-        await this.page.waitForURL('/owners/*')
-    }
-
-    async validateVisitDate(visitDate: string){
-        const samanthaAllVisitsTable = this.page.locator(".table-condensed").last()
-        const firstVisitDateCell = samanthaAllVisitsTable.locator("tr td").first()
-        await expect(firstVisitDateCell).toHaveText(visitDate);
-    }
-
     async deleteVisitForPet(petName: string,description:string){
         const petVisitsTable = this.page.locator('app-pet-list', { has: this.page.getByText(petName) }).locator('app-visit-list')
         
@@ -111,5 +95,21 @@ export class OwnerInformationPage {
         await this.page.getByRole('row', {name: phoneNumber}).getByRole('link').click()
         await expect(this.page.getByRole('row', {name: "Telephone"})).toContainText(phoneNumber)
         await expect(this.page.getByRole('table').locator("dd").first()).toHaveText(petName!)
+    }
+
+    async validateVisitDate(visitDate: string){
+        const samanthaAllVisitsTable = this.page.locator(".table-condensed").last()
+        const firstVisitDateCell = samanthaAllVisitsTable.locator("tr td").first()
+        await expect(firstVisitDateCell).toHaveText(visitDate);
+    }
+
+      /**
+     * 
+     * @param petName - pet name selected for test
+     */
+      async clickEditPetWithName(petName: string){
+        const petRosy = this.page.locator(".dl-horizontal", { hasText: petName })
+        await petRosy.getByRole('button', { name: 'Edit Pet' }).click()
+        await expect(this.page.locator('#name')).toHaveValue(petName)
     }
 }

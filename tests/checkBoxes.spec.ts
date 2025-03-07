@@ -11,7 +11,7 @@ test.describe("Checkboxes assignment", async () => {
   test('Validate selected specialties', async ({page}) => {
     const pm = new PageManager(page)
     await pm.onVeterinariansPage().clickEditButtonForVet('Helen Leary')
-    await pm.onVeterinariansPage().checkVetSpecialityIs('radiology')
+    await pm.onEditVeterinarianPage().checkVetSpecialityIs('radiology')
 
     const radiologyCheckbox = page.getByRole('checkbox', {name: 'radiology'})
     const surgeryCheckbox = page.getByRole('checkbox', {name: 'surgery'})
@@ -24,24 +24,24 @@ test.describe("Checkboxes assignment", async () => {
     // Modify specialty and verify changes
     await surgeryCheckbox.check()
     await radiologyCheckbox.uncheck()
-    await pm.onVeterinariansPage().checkVetSpecialityIs('surgery')
+    await pm.onEditVeterinarianPage().checkVetSpecialityIs('surgery')
     await dentistryCheckbox.check()
-    await pm.onVeterinariansPage().checkVetSpecialityIs('surgery, dentistry')
+    await pm.onEditVeterinarianPage().checkVetSpecialityIs('surgery, dentistry')
   });
 
   test('Select all specialties', async ({page}) => {
     const pm = new PageManager(page)
     await pm.onVeterinariansPage().clickEditButtonForVet('Rafael Ortega')
-    await pm.onVeterinariansPage().checkVetSpecialityIs('surgery')
-    await pm.onVeterinariansPage().setAllSpecialitiesCheckboxesInSpecialitiesDropdownTo(true)
-    await pm.onVeterinariansPage().checkVetSpecialityIs('surgery, radiology, dentistry')
+    await pm.onEditVeterinarianPage().checkVetSpecialityIs('surgery')
+    await pm.onEditVeterinarianPage().setAllSpecialitiesCheckboxesInSpecialitiesDropdownTo(true)
+    await pm.onEditVeterinarianPage().checkVetSpecialityIs('surgery, radiology, dentistry')
   });
 
   test('Unselect all specialties', async ({page}) => {
     const pm = new PageManager(page)
     await pm.onVeterinariansPage().clickEditButtonForVet('Linda Douglas')
-    await pm.onVeterinariansPage().checkVetSpecialityIs('dentistry, surgery')
-    await pm.onVeterinariansPage().setAllSpecialitiesCheckboxesInSpecialitiesDropdownTo(false)
+    await pm.onEditVeterinarianPage().checkVetSpecialityIs('dentistry, surgery')
+    await pm.onEditVeterinarianPage().setAllSpecialitiesCheckboxesInSpecialitiesDropdownTo(false)
     await expect(page.locator('.selected-specialties')).toBeEmpty() 
   });
 })
