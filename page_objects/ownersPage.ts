@@ -9,8 +9,9 @@ export class OwnersPage {
 
     async selectOwnerFromOwnersTableByName(ownerName: string){
         await this.page.getByRole('link', {name: ownerName }).click();
-        await this.page.waitForResponse('**/api/owners/*')
+        //await this.page.waitForResponse('**/api/owners/*')
         await expect(this.page.locator(".ownerFullName")).toHaveText(ownerName)
+        await expect(this.page.getByRole("heading").first()).toHaveText('Owner Information')
     }
 
     async searchByOwnerNameAndValidateSearchResult(ownerName: string){
@@ -54,6 +55,11 @@ export class OwnersPage {
             petsInSelectedCity.push(petName.trim())
         }
         return petsInSelectedCity
+    }
+
+    async countOwnersRowsInOwnersTable(){
+        const countOfOwnersInTable = this.page.locator('.ownerFullName')
+        return countOfOwnersInTable
     }
 
 }
