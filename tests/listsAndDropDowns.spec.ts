@@ -1,61 +1,37 @@
 import { test, expect } from '@playwright/test';
+import { PageManager } from '../page_objects/pageManager';
 
 test.beforeEach( async({page}) => {
   await page.goto('/')
-  await page.getByRole('button', {name:"Owners"}).click();
-  await page.getByRole('link', {name:"Search"}).click();
-  await expect(page.getByRole('heading')).toHaveText('Owners')
+  const pm = new PageManager(page)
+  await pm.navigateTo().ownersPage()
 })
 
 test.describe("Lists and dropdowns assignment", async () => {
     test('Validate selected pet types from the list', async ({page}) => {
-    // Check the default pet selection of "George Franklin" owner
-        await page.getByRole('link', {name: 'George Franklin'}).click();
-        await expect(page.locator(".ownerFullName")).toHaveText("George Franklin");
-        await page.locator("app-pet-list", { hasText: "Leo" }).getByRole('button', { name: 'Edit Pet' }).click()
-        await expect(page.getByRole('heading')).toHaveText('Pet')
-        await expect(page.locator('#owner_name')).toHaveValue('George Franklin')
-
-        const petTypeField = page.locator('#type1');
-        await expect(petTypeField).toHaveValue('cat')
-
-    // Select pet option from the dropdown one by one  and verify that selected value is displayed in Type field 
-        for (let petType of await page.locator("#type option").allInnerTexts()) {
-        await page.locator("#type").selectOption(petType);
-        await expect(petTypeField).toHaveValue(petType);
-        }
+        const pm = new PageManager(page)
+        await pm.onOwnersPage().selectOwnerFromOwnersTableByName('George Franklin')
+        await pm.onOwnerInformationPage().clickEditPetWithName('Leo')
+        await pm.onPetDetailsPage().validatePetOwnerAndPetTypeAre('George Franklin', 'cat')
+        await pm.onPetDetailsPage().selectSequentiallyAllOptionsFromDropdownAndVerifyOptionDisplayInTypeField()
     });
 
     test('Validate the pet type update', async ({page}) => {
-        await page.getByRole('link', {name: 'Eduardo Rodriquez'}).click();
-        
-        const petRosy = page.locator(".dl-horizontal", { hasText: "Rosy" })
-        await petRosy.getByRole('button', { name: 'Edit Pet' }).click()
-        await expect(page.locator('#name')).toHaveValue('Rosy')
+        const pm = new PageManager(page)
+        await pm.onOwnersPage().selectOwnerFromOwnersTableByName('Eduardo Rodriquez')
+        await pm.onOwnerInformationPage().clickEditPetWithName('Rosy')
 
-    // Verify that initial value "dog" is displayed in the "Type" field 
-        const petTypeField = page.locator('#type1')
-        await expect(petTypeField).toHaveValue('dog')
+    // Verify that initial value "dog" is displayed in the "Type" field for pet Rosy
+        await pm.onPetDetailsPage().validatePetOwnerAndPetTypeAre('Eduardo Rodriquez', 'dog')
 
     // Update pet type 
-        const petTypeDropdownMenu = page.locator('#type')
-
-        await petTypeDropdownMenu.selectOption('bird')
-        await expect(petTypeField).toHaveValue('bird')
-        await expect(petTypeDropdownMenu).toHaveValue('bird')
-
-        await  page.getByRole('button', {name:"Update Pet"}).click()
-
-        const petTypeOnOwnerInfoPage = petRosy.locator('dd').last()
-        await expect(petTypeOnOwnerInfoPage).toHaveText('bird')
+        await pm.onPetDetailsPage().updatePetTypeTo('bird')
+        await pm.onOwnerInformationPage().validatePetTypeOnOwnerInfoPage('Rosy', 'bird')
    
-    // Revert the selection of the pet type "bird" to its initial value "dog" and verify pet type
-        await petRosy.getByRole('button', { name: 'Edit Pet' }).click()
-        await expect(petTypeField).toHaveValue('bird')
-        await petTypeDropdownMenu.selectOption('dog')
-        await expect(petTypeField).toHaveValue('dog')
-        await expect(petTypeDropdownMenu).toHaveValue('dog')
-        await page.getByRole('button', {name:"Update Pet"}).click();
-        await expect(petTypeOnOwnerInfoPage).toHaveText('dog')
+    // Revert the selection of the pet type "bird" for Rosy pet to its initial value "dog" and verify pet type
+        await pm.onOwnerInformationPage().clickEditPetWithName('Rosy')
+        await pm.onPetDetailsPage().validatePetOwnerAndPetTypeAre('Eduardo Rodriquez', 'bird')
+        await pm.onPetDetailsPage().updatePetTypeTo('dog')
+        await pm.onOwnerInformationPage().validatePetTypeOnOwnerInfoPage('Rosy', 'dog')
     });
 })

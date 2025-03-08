@@ -1,77 +1,50 @@
 import { test, expect } from '@playwright/test';
+import { PageManager } from '../page_objects/pageManager';
 
 test.beforeEach( async({page}) => {
   await page.goto('/');
-  await page.getByRole('link', {name:"Pet Types"}).click();
-  await expect(page.getByRole('heading')).toHaveText('Pet Types');
+  const pm = new PageManager(page)
+  await pm.navigateTo().petTypesPage()
 })
 
 test.describe("Interacting with Input Fields practice", async () => {
     test('Update pet type', async ({page}) => {
-        // Change the pet type name from "cat" to "rabbit" and click "Update" button
-        await page.getByRole('row', { name: 'cat' }).getByRole('button', {name: 'Edit'}).click();
+        const pm = new PageManager(page)
+        await pm.onPetTypePage().clickEditbuttonForPetType('cat')
+        await pm.onEditPetTypePage().enterNewPetTypeName('rabbit')
+        await pm.onEditPetTypePage().confirmPetTypeNameUpdating()
+        await pm.onPetTypePage().validatePetTypeValueByRowIndex('0','rabbit')
 
-        await expect(page.getByRole('heading')).toHaveText('Edit Pet Type');
-        const nameField = page.getByRole('textbox');
-        await nameField.click();
-        await nameField.clear();
-        await nameField.fill('rabbit');
-        await page.getByRole('button', {name:"Update"}).click();
-        
-
-        //Add the assertion that the first pet type in the list of types has an edited value "rabbit" 
-        const firstPetInTheList = page.locator('[id="0"]');
-        await expect(firstPetInTheList).toHaveValue("rabbit");
-        
-        //Click on "Edit" button for the same "rabbit" pet type
-        await page.getByRole('row', { name: 'rabbit' }).getByRole('button', {name: 'Edit'}).click();
-
-        // Change the pet type name back from "rabbit" to "cat" and click "Update" button
-        await nameField.click();
-        await nameField.clear();
-        await nameField.fill('cat');
-        await page.getByRole('button', {name:"Update"}).click();
-
-        //Add the assertion that the first pet type in the list of names has a value "cat" 
-        await expect(firstPetInTheList).toHaveValue("cat")
+        // Change the pet type name back from "rabbit" to "cat"
+        await pm.onPetTypePage().clickEditbuttonForPetType('rabbit')
+        await pm.onEditPetTypePage().enterNewPetTypeName('cat')
+        await pm.onEditPetTypePage().confirmPetTypeNameUpdating()
+        await pm.onPetTypePage().validatePetTypeValueByRowIndex('0','cat')
     });
 
     test('Cancel pet type update', async ({page}) => {
-        // Click on "Edit" button for the "dog" pet type
-        await page.getByRole('row', { name: 'dog' }).getByRole('button', {name: 'Edit'}).click()
-
-        // Type the new pet type name "moose"
-        const nameField = page.getByRole('textbox')
-        await nameField.click()
-        await nameField.clear()
-        await nameField.fill('moose')
-
-        // Add assertion the value "moose" is displayed in the input field of the "Edit Pet Type" page
-        const nameFieldValue = await nameField.inputValue();
-        expect(nameFieldValue).toEqual('moose');
-
-        // Cancel the changes and verify that the "dog" value is still displayed in the list of pet types
-        await page.getByRole('button', {name:"Cancel"}).click()
-        await expect(page.locator('[id="1"]')).toHaveValue("dog");
+        const pm = new PageManager(page)
+        await pm.onPetTypePage().clickEditbuttonForPetType('dog')
+        await pm.onEditPetTypePage().enterNewPetTypeName('mouse')
+        await pm.onEditPetTypePage().clickCancelButtonForPetTypeUpdating()
+        await pm.onPetTypePage().validatePetTypeValueByRowIndex('1','dog')
     });
 
     test('Pet type name is required validation', async ({page}) => {
-        // Click on "Edit" button for the "lizard" pet type
-        await page.getByRole('row', { name: 'lizard' }).getByRole('button', {name: 'Edit'}).click()
+        const pm = new PageManager(page)
+        await pm.onPetTypePage().clickEditbuttonForPetType('lizard')
 
         // On the Edit Pet Type page, verify validation message when Name field is empty
-        const nameField = page.getByRole('textbox')
-        await nameField.click()
-        await nameField.clear()
-        await expect(page.locator('.help-block')).toHaveText('Name is required');
-        await page.getByRole('button', {name:"Update"}).click()
+        await pm.onEditPetTypePage().clearNameField()
+        await pm.onEditPetTypePage().verifyValidationMessageForEmptyPetTypeNameFieldIs('Name is required')
 
         // Verify that "Edit Pet Type" page is still displayed after submitting empty value
-        await expect(page.getByRole('heading')).toHaveText('Edit Pet Type')
-        await page.getByRole('button', {name:"Cancel"}).click()
+        await pm.onEditPetTypePage().confirmPetTypeNameUpdating()
+        await pm.onEditPetTypePage().verifyPageHeadingIs('Edit Pet Type')
+        await pm.onEditPetTypePage().clickCancelButtonForPetTypeUpdating()
 
         // Verify that "Pet Types" page is displayed when changes are cancelled
-        await expect(page.getByRole('heading')).toHaveText('Pet Types')
+        await pm.onEditPetTypePage().verifyPageHeadingIs('Pet Types')
     });
 
 })
