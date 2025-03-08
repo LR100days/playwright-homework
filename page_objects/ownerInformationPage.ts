@@ -112,4 +112,28 @@ export class OwnerInformationPage {
         await petRosy.getByRole('button', { name: 'Edit Pet' }).click()
         await expect(this.page.locator('#name')).toHaveValue(petName)
     }
+
+    async validateOwnerNameAddressCityAndTelephoneAre(name: string, address: string, city: string, phone: string ){
+        await expect(this.page.locator(".ownerFullName")).toHaveText(name)
+        await expect(this.page.getByRole('row', {name: "Address"})).toContainText(address)
+        await expect(this.page.getByRole('row', {name: "City"})).toContainText(city)
+        await expect(this.page.getByRole('row', {name: "Telephone"})).toContainText(phone)
+    }
+
+    async createListOfPetsNamesThatAreDisplayedOnOwnerInfoPage(){
+        const petsList: string[] = [];
+        const allPetTablesRows = await this.page.locator('dd').all();
+
+        for (let i = 0; i < allPetTablesRows.length; i += 3) {
+            const petName = await allPetTablesRows[i].innerText();
+            petsList.push(petName.trim());
+            }
+
+        return petsList      
+    }
+
+    async validateVisitsCountForPetName(petName: string, expectedVisitsCount: number){
+        await expect(this.page.locator('app-pet-list', { has: this.page.getByText(petName) })
+            .locator('app-visit-list tr:not(:first-child)')).toHaveCount(expectedVisitsCount)
+    }
 }

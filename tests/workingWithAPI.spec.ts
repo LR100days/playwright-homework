@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-//import { PageManager } from '../page_objects/pageManager';
+import { PageManager } from '../page_objects/pageManager';
 import ownersDetails from '../test-data/ownersDetails.json'
 
 test.beforeEach( async({page}) => {
@@ -16,18 +16,27 @@ test.beforeEach( async({page}) => {
     })
   })
 
-  await page.goto("/owners");
-  //const pm = new PageManager(page)
-  //await pm.navigateTo().ownersPage()
+  await page.goto("/");
+  const pm = new PageManager(page)
+  await pm.navigateTo().ownersPage()
 
 })
 
 test('mocking API request', async ({page}) => {
-  await expect(page.locator('.ownerFullName')).toHaveCount(2)
-  await page.getByRole('link', { name: 'Adam Braun' }).click()
-  await expect(page.locator('.ownerFullName')).toHaveText('Adam Braun')
+  const pm = new PageManager(page)
+  let countOfOwnersInTable = await pm.onOwnersPage().countOwnersRowsInOwnersTable()
+  await expect(countOfOwnersInTable).toHaveCount(2)
+
+  await pm.onOwnersPage().selectOwnerFromOwnersTableByName(`${ownersDetails[0].firstName} ${ownersDetails[0].lastName}`)
+  await pm.onOwnerInformationPage().validateOwnerNameAddressCityAndTelephoneAre(`${ownersDetails[0].firstName} ${ownersDetails[0].lastName}`,
+    `${ownersDetails[0].address}`, `${ownersDetails[0].city}`, `${ownersDetails[0].telephone}`)
   
-  await expect(page.locator('table').first().locator('tr td').last()).toContainText('3456789012')
-  await expect(page.locator('.dl-horizontal dd').first()).toContainText(`${ownersDetails[0].pets[0].name}`)
+  let actualPetListOfOwner = await pm.onOwnerInformationPage().createListOfPetsNamesThatAreDisplayedOnOwnerInfoPage()
+  
+  let expectedPetsList: string[] = ownersDetails[0].pets.map(pet => pet.name);
+  
+  expect(actualPetListOfOwner).toEqual(expectedPetsList)
+
+  await pm.onOwnerInformationPage().validateVisitsCountForPetName(`${ownersDetails[0].pets[0].name}`, 10)
 
 });
