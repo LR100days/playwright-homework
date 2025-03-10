@@ -1,0 +1,163 @@
+[
+    {
+        "firstName": "Adam",
+        "lastName": "Braun",
+        "address": "Light Street",
+        "city": "London",
+        "telephone": "3456789012",
+        "id": 855,
+        "pets": [
+            {
+                "name": "Fluffy",
+                "birthDate": "2000-09-07",
+                "type": {
+                    "name": "cat",
+                    "id": 1480
+                },
+                "id": 1814,
+                "ownerId": 855,
+                "visits": [
+                    {
+                        "date": "2025-02-17",
+                        "description": "Pet registration",
+                        "id": 3053,
+                        "petId": null
+                    },
+                    {
+                        "date": "2025-02-18",
+                        "description": "Check-up1",
+                        "id": 3054,
+                        "petId": null
+                    },
+                    {
+                        "date": "2025-02-20",
+                        "description": "Check-up2",
+                        "id": 3055,
+                        "petId": null
+                    },
+                    {
+                        "date": "2025-02-22",
+                        "description": "Check-up3",
+                        "id": 3056,
+                        "petId": null
+                    },
+                    {
+                        "date": "2025-02-25",
+                        "description": "Check-up4",
+                        "id": 3057,
+                        "petId": null
+                    },
+                    {
+                        "date": "2025-02-27",
+                        "description": "Check-up5",
+                        "id": 3058,
+                        "petId": null
+                    },
+                    {
+                        "date": "2025-03-01",
+                        "description": "Check-up6",
+                        "id": 3059,
+                        "petId": null
+                    },
+                    {
+                        "date": "2025-03-03",
+                        "description": "Check-up7",
+                        "id": 3060,
+                        "petId": null
+                    },
+                    {
+                        "date": "2025-03-05",
+                        "description": "Check-up8",
+                        "id": 3061,
+                        "petId": null
+                    },
+                    {
+                        "date": "2025-03-07",
+                        "description": "Check-up9",
+                        "id": 3062,
+                        "petId": null
+                    }
+                 ]
+            },
+
+            {
+                "name": "Sam",
+                "birthDate": "2001-04-17",
+                "type": {
+                    "name": "dog",
+                    "id": 1481
+                },
+                "id": 1815,
+                "ownerId": 855,
+                "visits": []
+            }
+        ]
+    },
+
+    {
+        "firstName": "Anna",
+        "lastName": "Black",
+        "address": "Liberty St.",
+        "city": "Boston",
+        "telephone": "6187556025",
+        "id": 856,
+        "pets": [
+            {
+                "name": "Leopold",
+                "birthDate": "2010-09-07",
+                "type": {
+                    "name": "cat",
+                    "id": 1482
+                },
+                "id": 1502,
+                "ownerId": 856,
+                "visits": []
+            },
+            {
+                "name": "Dora",
+                "birthDate": "2010-04-07",
+                "type": {
+                    "name": "cat",
+                    "id": 1483
+                },
+                "id": 1503,
+                "ownerId": 856,
+                "visits": []
+            },
+            {
+                "name": "Luna",
+                "birthDate": "2010-09-08",
+                "type": {
+                    "name": "cat",
+                    "id": 1484
+                },
+                "id": 1504,
+                "ownerId": 856,
+                "visits": []
+            },
+            {
+                "name": "Uta",
+                "birthDate": "2014-09-07",
+                "type": {
+                    "name": "cat",
+                    "id": 1485
+                },
+                "id": 1505,
+                "ownerId": 856,
+                "visits": []
+            },
+            {
+                "name": "Gera",
+                "birthDate": "2010-02-07",
+                "type": {
+                    "name": "cat",
+                    "id": 1486
+                },
+                "id": 1506,
+                "ownerId": 856,
+                "visits": []
+            }
+        ]
+    }
+
+]
