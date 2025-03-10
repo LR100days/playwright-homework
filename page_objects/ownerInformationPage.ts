@@ -120,7 +120,7 @@ export class OwnerInformationPage {
         await expect(this.page.getByRole('row', {name: "Telephone"})).toContainText(phone)
     }
 
-    async createListOfPetsNamesThatAreDisplayedOnOwnerInfoPage(){
+    async getListOfPetsNamesThatAreDisplayedOnOwnerInfoPage(){
         const petsList: string[] = [];
         const allPetTablesRows = await this.page.locator('dd').all();
 
