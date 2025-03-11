@@ -19,5 +19,10 @@ export class VeterinariansPage {
             await expect(specialtyForSelectedVet).toHaveText(expectedVetSpeciality)
         }
     }
+
+    async validateNumberOfSpecialtiesByVetName(vetName: string, expectedSpecialitiesNumber: number ){
+        const specialtyForSelectedVet = this.page.getByRole('row', {name:vetName}).locator('td div')
+            await expect(specialtyForSelectedVet).toHaveCount(expectedSpecialitiesNumber)
+    }
 }
 
