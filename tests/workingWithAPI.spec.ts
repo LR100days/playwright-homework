@@ -50,7 +50,7 @@ test.describe('veterinarians page', async () => {
           const response = await route.fetch();
           const responseBody = await response.json();
 
-          responseBody.forEach((vet: { firstName: string; lastName: string; specialties: { id: number; name: string; }[]; }) => {
+          responseBody.forEach((vet: any) => {
             if (vet.firstName === 'Sharon' && vet.lastName === 'Jenkins') {
                 vet.specialties = specialities;
             }
