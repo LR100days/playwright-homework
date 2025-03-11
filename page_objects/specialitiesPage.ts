@@ -8,6 +8,7 @@ export class SpecialitiesPage {
 
     async deleteSpecialityByName(speciality: string){
         await this.page.getByRole('row', {name: speciality}).getByRole('button', {name:"Delete"}).click()
+        
     }
 
     async addNewSpeciality(newSpeciality: string){
@@ -59,6 +60,14 @@ export class SpecialitiesPage {
     async validateSpecialityValueInSpecialitiesTableByRowIndex(rowIndex: number, expectedSpeciality: string){
         const selectedSpecialtyRow = this.page.getByRole('row').nth(rowIndex)
         await expect(selectedSpecialtyRow.locator('td input')).toHaveValue(expectedSpeciality);
+    }
+
+    async validateLastAddedSpecialtyInTableByName(specialtyName: string) {
+        await expect(this.page.getByRole('textbox').last()).toHaveValue(specialtyName)
+    }
+
+    async validateLastAddedSpecialtyInTableIsDeletedByName(specialtyName: string) {
+        await expect(this.page.getByRole('textbox').last()).not.toHaveValue(specialtyName)
     }
 
    
