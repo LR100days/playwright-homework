@@ -47,5 +47,22 @@ export class EditVeterinarianPage {
     async clickSaveVetDetails(){
         await this.page.getByRole('button', {name:"Save Vet"}).click();
     }
+
+    /**
+     * Extrats all specialties options text from Specialties dropdown.
+     * @returns a list of strings with specialty names from Specialties dropdown.
+     */
+    async createListOfAllSpecialtiesInDropdownOptions(){
+        await this.page.locator('.dropdown-display').click()
+
+        const dropdownOptions = this.page.locator('.dropdown-content div label')
+        let specialtiesOptionsInDropdown: string[] = []
+
+        for(let option of await dropdownOptions.all()){
+            let optionValue = await option.innerText()
+            specialtiesOptionsInDropdown.push(optionValue)
+        }
+        return specialtiesOptionsInDropdown
+    }
 }
 

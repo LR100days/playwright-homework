@@ -87,7 +87,7 @@ test('Validate specialty lists', async ({page}) => {
     await pm.navigateTo().veterinariansPage()
     await pm.onVeterinariansPage().clickEditButtonForVet("Sharon Jenkins")
   
-    let dropdownSpecialtiesOptions = await pm.onSpecialtiesPage().createListOfAllSpecialtiesInDropdownOptions()
+    let dropdownSpecialtiesOptions = await pm.onEditVeterinarianPage().createListOfAllSpecialtiesInDropdownOptions()
     expect(dropdownSpecialtiesOptions).toEqual(allSpecialties)
    
     await pm.onEditVeterinarianPage().inSpecialtiesDropdownSelectSpecialtyCheckbox('oncology')

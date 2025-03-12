@@ -34,23 +34,6 @@ export class SpecialtiesPage {
         return allSpecialtiesList
     }
 
-    /**
-     * Extrats all specialties options text from Specialties dropdown.
-     * @returns a list of strings with specialty names from Specialties dropdown.
-     */
-    async createListOfAllSpecialtiesInDropdownOptions(){
-        await this.page.locator('.dropdown-display').click()
-
-        const dropdownOptions = this.page.locator('.dropdown-content div label')
-        let specialtiesOptionsInDropdown: string[] = []
-
-        for(let option of await dropdownOptions.all()){
-            let optionValue = await option.innerText()
-            specialtiesOptionsInDropdown.push(optionValue)
-        }
-        return specialtiesOptionsInDropdown
-    }
-
     async selectEditSpecialtyInSpecialtiesTableByRowIndex(rowIndex: number){
         const selectedSpecialtyRow = this.page.getByRole('row').nth(rowIndex)
         await selectedSpecialtyRow.getByRole('button', { name: 'Edit' }).click()
