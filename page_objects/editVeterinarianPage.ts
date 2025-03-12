@@ -52,7 +52,7 @@ export class EditVeterinarianPage {
      * Extrats all specialties options text from Specialties dropdown.
      * @returns a list of strings with specialty names from Specialties dropdown.
      */
-    async createListOfAllSpecialtiesInDropdownOptions(){
+    async getListOfAllSpecialtiesInDropdownOptions(){
         await this.page.locator('.dropdown-display').click()
 
         const dropdownOptions = this.page.locator('.dropdown-content div label')

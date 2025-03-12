@@ -23,7 +23,7 @@ export class SpecialtiesPage {
      * Extrats all specialties text from Specialties table.
      * @returns a list of strings with specialty names from Specialties table.
      */
-    async createListOfAllSpecialtiesThatAreShownInTable(){
+    async getListOfAllSpecialtiesThatAreShownInTable(){
         const allRows = this.page.getByRole('row').filter({has: this.page.getByRole('button', {name:"Edit"})})
         let allSpecialtiesList: string[] = [];
 
