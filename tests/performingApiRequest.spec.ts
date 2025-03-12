@@ -2,17 +2,17 @@ import { test, expect } from '@playwright/test';
 import { request, APIRequestContext } from '@playwright/test';
 import { PageManager } from '../page_objects/pageManager';
 
-
 test.beforeEach( async({page}) => {
   await page.goto("/");
 })
 
 test('Delete specialty validation', async ({page}) => {
     // Create specialty by API
+    const newSpecialty = "api testing expert"
     const apiContext: APIRequestContext = await request.newContext();
     const specialtiesResponse = await apiContext.post('https://petclinic-api.bondaracademy.com/petclinic/api/specialties', {
         data: {
-            "name":"api testing expert"
+            "name":newSpecialty
         },
         headers: {
             Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
@@ -20,12 +20,12 @@ test('Delete specialty validation', async ({page}) => {
     })
     expect(specialtiesResponse.status()).toEqual(201)
 
-    // Verify added speciality and then delete it
+    // Verify added specialty and then delete it
     const pm = new PageManager(page)
-    await pm.navigateTo().specialitiesPage()
-    await pm.onSpecialitiesPage().validateLastAddedSpecialtyInTableByName('api testing expert')
-    await pm.onSpecialitiesPage().deleteSpecialityByName('api testing expert')
-    await pm.onSpecialitiesPage().validateLastAddedSpecialtyInTableIsDeletedByName('api testing expert')
+    await pm.navigateTo().specialtiesPage()
+    await pm.onSpecialtiesPage().validateLastAddedSpecialtyInTableByName(newSpecialty)
+    await pm.onSpecialtiesPage().deleteSpecialtyByName(newSpecialty)
+    await pm.onSpecialtiesPage().validateLastAddedSpecialtyInTableIsDeletedByName(newSpecialty)
 });
 
 

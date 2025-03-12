@@ -5,11 +5,11 @@ import { OwnerInformationPage } from './ownerInformationPage';
 import { VeterinariansPage } from './veterinariansPage';
 import { PetTypesPage } from './petTypesPage';
 import { PetDetailsPage } from './petDetailsPage';
-import { SpecialitiesPage } from './specialitiesPage';
+import { SpecialtiesPage } from './specialtiesPage'
 import { EditVeterinarianPage } from './editVeterinarianPage'; 
 import { NewVisitPage } from './newVisitPage'; 
 import { EditPetTypePage } from './editPetTypePage';
-import { EditSpecialityPage } from './editSpecialityPage';
+import { EditSpecialtyPage } from './editSpecialtyPage';
 
 
 
@@ -22,11 +22,11 @@ export class PageManager{
     private readonly petDetailsPage: PetDetailsPage
     private readonly ownersPage: OwnersPage
     private readonly ownerInformationPage: OwnerInformationPage
-    private readonly specialitiesPage: SpecialitiesPage
+    private readonly specialtiesPage: SpecialtiesPage
     private readonly editVeterinarianPage: EditVeterinarianPage
     private readonly newVisitPage: NewVisitPage
     private readonly editPetTypePage: EditPetTypePage
-    private readonly editSpecialityPage: EditSpecialityPage
+    private readonly editSpecialtyPage: EditSpecialtyPage
 
 
     constructor(page: Page){
@@ -37,11 +37,11 @@ export class PageManager{
         this.petDetailsPage = new PetDetailsPage(this.page)
         this.ownersPage = new OwnersPage(this.page)
         this.ownerInformationPage = new OwnerInformationPage(this.page)
-        this.specialitiesPage = new SpecialitiesPage(this.page)
+        this.specialtiesPage = new SpecialtiesPage(this.page)
         this.editVeterinarianPage = new EditVeterinarianPage(this.page)
         this.newVisitPage = new NewVisitPage(this.page)
         this.editPetTypePage = new EditPetTypePage(this.page)
-        this.editSpecialityPage = new EditSpecialityPage(this.page)
+        this.editSpecialtyPage = new EditSpecialtyPage(this.page)
         
     }
 
@@ -69,8 +69,8 @@ export class PageManager{
         return this.ownerInformationPage
     }
 
-    onSpecialitiesPage(){
-        return this.specialitiesPage
+    onSpecialtiesPage(){
+        return this.specialtiesPage
     }
 
     onEditVeterinarianPage(){
@@ -85,7 +85,7 @@ export class PageManager{
         return this.editPetTypePage
     }
 
-    onEditSpecialityPage(){
-        return this.editSpecialityPage
+    onEditSpecialtyPage(){
+        return this.editSpecialtyPage
     }
 }
