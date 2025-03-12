@@ -35,6 +35,10 @@ export class EditVeterinarianPage {
     }
 
     async inSpecialtiesDropdownSelectSpecialtyCheckbox(checkboxOption: string){
+        if(!await this.page.getByRole('checkbox', {name: checkboxOption}).isVisible()){
+            await this.page.locator('.dropdown-display').click() // to open the dropdown
+        }
+        
         await this.page.getByRole('checkbox', {name: checkboxOption}).check()
         expect(await this.page.getByRole('checkbox', {name: checkboxOption}).isChecked()).toBeTruthy()
         await this.page.locator('.dropdown-display').click() // to close the dropdown

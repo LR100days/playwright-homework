@@ -28,34 +28,95 @@ test('Delete specialty validation', async ({page}) => {
     await pm.onSpecialtiesPage().validateLastAddedSpecialtyInTableIsDeletedByName(newSpecialty)
 });
 
-
-
 test('Add and delete veterinarian', async ({page}) => {
-    // Test Case 2: Add and delete veterinarian
-// STEPS:
-// 1. Using API, create a new Veterinarian without the specialties assigned. Save the veterinarian ID from the response to the constant for later use. Add assertion of the response status code and name of the veterinarian
-// 2. Navigate to Veterinarians page
-// 3. Add the assertion that newly created veterinarian is available in the list and it does not have specialties assigned
-// 4. Click "Edit Vet" button for newly created veterinarian
-// 5. On "Edit Veterinarian" page, select "dentistry" specialty from the drop-down, and click Save Vet button
-// 6. Add the assertion that the "dentistry" specialty is displayed for the test veterinarian
-// 7. Using API request, delete the created test veterinarian. Add assertion of response status code. (Tip: use the ID from the step 1)
-// 8. Using API request, get the list of veterinarians. Make the assertion that deleted veterinarian does not exist in the response body
+    // Create veterinarian by API
+    const apiContext: APIRequestContext = await request.newContext();
+    const veterinarianResponse = await apiContext.post('https://petclinic-api.bondaracademy.com/petclinic/api/vets', {
+        data: {
+            "firstName":"Maria",
+            "lastName":"Green",
+            "specialties":[],
+        },
+        headers: {
+            Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+        },
+    })
+    expect(veterinarianResponse.status()).toEqual(201);
+    const veterinarianResponseBody = await veterinarianResponse.json();
+    const veterinarianID = await veterinarianResponseBody.id;
+
+    // On Veterinarians page validate vet speciality before and after update
+    const pm = new PageManager(page)
+    await pm.navigateTo().veterinariansPage();
+    await pm.onVeterinariansPage().validateVetSpecialtyInVetTable('Maria Green', 'empty');
+    await pm.onVeterinariansPage().clickEditButtonForVet('Maria Green');
+    await pm.onEditVeterinarianPage().inSpecialtiesDropdownSelectSpecialtyCheckbox('dentistry');
+    await pm.onEditVeterinarianPage().clickSaveVetDetails()
+    await pm.onVeterinariansPage().validateVetSpecialtyInVetTable('Maria Green',"dentistry" )
+
+    // Delete vet by API and check that the vet is not shown in Veterinarians API response anymore
+    const veterinarianDeleteResponse = await apiContext.delete(`https://petclinic-api.bondaracademy.com/petclinic/api/vets/${veterinarianID}`)
+    expect(veterinarianDeleteResponse.status()).toEqual(204);
+    const vetListResponse = await apiContext.get('https://petclinic-api.bondaracademy.com/petclinic/api/vets')
+    const vetListResponseBody = await vetListResponse.json()
+    expect(vetListResponseBody.every((vet: any) => vet.id !== veterinarianID)).toBeTruthy();
 
 });
 
 test('New specialty is displayed', async ({page}) => {
-    // Test Case 3: New specialty is displayed
-// STEPS:
-// 1. Using API request, create a new specialty with the name "api testing ninja". Add assertion of the response status code
-// 2. Using API request, create a new veterinarian with a specialty "surgery". Add assertion of the response status code.
-// 3. Navigate to Veterinarians page
-// 4. Add the assertion that newly created veterinarian is available in the list and it has specialty "surgery"
-// 5. Click on the "Edit Vet" button
-// 6. On Edit Veterinarian page, change the specialty from "surgery" to "api testing ninja" and click "Save Vet" button
-// 7. Add the assertion that veterinarian has a specialty "api testing ninja"
-// 8. Using API request, delete the create test veterinarian. Add assertion of the response status code
-// 9. Using API request, delete the specialty "api testing ninja". Add assertion of the response status code
-// 10. Navigate to the Specialties page and add assertion that "api testing ninja" does not exist in the list of specialties
-    
+    // Create specialty by API
+    const newSpecialty = "api testing ninja"
+    const apiContext: APIRequestContext = await request.newContext();
+    const specialtiesResponse = await apiContext.post('https://petclinic-api.bondaracademy.com/petclinic/api/specialties', {
+        data: {
+            "name":newSpecialty
+        },
+        headers: {
+            Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+        },
+    })
+    expect(specialtiesResponse.status()).toEqual(201)
+    const specialtiesResponseBody = await specialtiesResponse.json();
+    const specialtyID = await specialtiesResponseBody.id;
+
+    // Create veterinarian by API
+    const veterinarianResponse = await apiContext.post('https://petclinic-api.bondaracademy.com/petclinic/api/vets', {
+        data: {
+            "firstName":"Anna",
+            "lastName":"White",
+            "specialties":[
+                {
+                    "id": 2678,
+                    "name": "surgery"
+                }
+            ],
+        },
+        headers: {
+            Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+        },
+    })
+    expect(veterinarianResponse.status()).toEqual(201);
+    const veterinarianResponseBody = await veterinarianResponse.json();
+    const veterinarianID = await veterinarianResponseBody.id;
+
+    // On Veterinarians page validate vet speciality before and after update
+    const pm = new PageManager(page)
+    await pm.navigateTo().veterinariansPage();
+    await pm.onVeterinariansPage().validateVetSpecialtyInVetTable('Anna White', 'surgery');
+    await pm.onVeterinariansPage().clickEditButtonForVet('Anna White')
+    await pm.onEditVeterinarianPage().checkVetSpecialtyIs('surgery')
+    await pm.onEditVeterinarianPage().setAllSpecialtiesCheckboxesInSpecialtiesDropdownTo(false)
+    await pm.onEditVeterinarianPage().inSpecialtiesDropdownSelectSpecialtyCheckbox('api testing ninja');
+    await pm.onEditVeterinarianPage().clickSaveVetDetails()
+    await pm.onVeterinariansPage().validateVetSpecialtyInVetTable('Anna White','api testing ninja')
+
+    // Delete vet and specialty by API
+    const veterinarianDeleteResponse = await apiContext.delete(`https://petclinic-api.bondaracademy.com/petclinic/api/vets/${veterinarianID}`)
+    expect(veterinarianDeleteResponse.status()).toEqual(204);
+
+    const specialtyDeleteResponse = await apiContext.delete(`https://petclinic-api.bondaracademy.com/petclinic/api/specialties/${specialtyID}`)
+    expect(specialtyDeleteResponse.status()).toEqual(204);
+
+    await pm.navigateTo().specialtiesPage();
+    await pm.onSpecialtiesPage().validateLastAddedSpecialtyInTableIsDeletedByName('api testing ninja')  
 });
