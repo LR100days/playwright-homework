@@ -83,11 +83,7 @@ test('add and delete an owner', async ({ page, request }) => {
   await pm.onOwnersPage().validateTableContainsOwnerName('Mike Black')
   await pm.onOwnersPage().validateOwnerDetailsInTable('Mike Black', 'Oxford str. 40', 'London', '6083551023')
   
-  const deleteOwnerResponse = await request.delete(`https://petclinic-api.bondaracademy.com/petclinic/api/owners/${ownerID}`, {
-    headers: {
-      Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
-    }
-  })
+  const deleteOwnerResponse = await request.delete(`https://petclinic-api.bondaracademy.com/petclinic/api/owners/${ownerID}`)
   expect(deleteOwnerResponse.status()).toEqual(204)
 
   await page.reload()
