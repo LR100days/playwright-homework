@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { PageManager } from '../page_objects/pageManager';
 import ownersDetails from '../test-data/ownersDetails.json'
-import specialities from '../test-data/specialities.json'
+import specialties from '../test-data/specialties.json'
 
 test.describe('owners page', async () => {
   test.beforeEach( async({page}) => {
@@ -52,7 +52,7 @@ test.describe('veterinarians page', async () => {
 
           responseBody.forEach((vet: any) => {
             if (vet.firstName === 'Sharon' && vet.lastName === 'Jenkins') {
-                vet.specialties = specialities;
+                vet.specialties = specialties;
             }
           });
 

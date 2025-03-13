@@ -10,19 +10,19 @@ export class VeterinariansPage {
         await this.page.locator('tr', {hasText: vetName}).getByRole('button',{name: "Edit Vet"}).click();
     }
 
-    async validateVetSpecialityInVetTable(vetName: string, expectedVetSpeciality: string ){
+    async validateVetSpecialtyInVetTable(vetName: string, expectedVetSpecialty: string ){
         const specialtyForSelectedVet = this.page.getByRole('row', {name:vetName}).locator('td').nth(1)
-        if (expectedVetSpeciality == 'empty'){
+        if (expectedVetSpecialty == 'empty'){
             await expect(specialtyForSelectedVet).toBeEmpty()
         }
         else{
-            await expect(specialtyForSelectedVet).toHaveText(expectedVetSpeciality)
+            await expect(specialtyForSelectedVet).toHaveText(expectedVetSpecialty)
         }
     }
 
-    async validateNumberOfSpecialtiesByVetName(vetName: string, expectedSpecialitiesNumber: number ){
+    async validateNumberOfSpecialtiesByVetName(vetName: string, expectedSpecialtiesNumber: number ){
         const specialtyForSelectedVet = this.page.getByRole('row', {name:vetName}).locator('td div')
-            await expect(specialtyForSelectedVet).toHaveCount(expectedSpecialitiesNumber)
+            await expect(specialtyForSelectedVet).toHaveCount(expectedSpecialtiesNumber)
     }
 }
 

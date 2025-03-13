@@ -49,57 +49,57 @@ test('Validate specialty update', async ({page}) => {
     const pm = new PageManager(page)
     await pm.navigateTo().veterinariansPage()
 
-// Verify initial target Veterinarian speciality
-    await pm.onVeterinariansPage().validateVetSpecialityInVetTable("Rafael Ortega","surgery" )
-    await pm.navigateTo().specialitiesPage()
+// Verify initial target Veterinarian specialty
+    await pm.onVeterinariansPage().validateVetSpecialtyInVetTable("Rafael Ortega","surgery" )
+    await pm.navigateTo().specialtiesPage()
 
-// Edit speciality from 'surgery' to 'dermatology' in the list of specialties
-    await pm.onSpecialitiesPage().selectEditSpecialityInSpecialitiesTableByRowIndex(2)
-    await pm.onEditSpecialityPage().enterNewSpecialityName('dermatology')
-    await pm.onEditSpecialityPage().confirmSpecialityUpdate()
+// Edit specialty from 'surgery' to 'dermatology' in the list of specialties
+    await pm.onSpecialtiesPage().selectEditSpecialtyInSpecialtiesTableByRowIndex(2)
+    await pm.onEditSpecialtyPage().enterNewSpecialtyName('dermatology')
+    await pm.onEditSpecialtyPage().confirmSpecialtyUpdate()
 
-// Verify that speciality is updated in the Speciality list and for the target Veterinarian
-    await pm.onSpecialitiesPage().validateSpecialityValueInSpecialitiesTableByRowIndex(2,"dermatology")
+// Verify that specialty is updated in the Specialty list and for the target Veterinarian
+    await pm.onSpecialtiesPage().validateSpecialtyValueInSpecialtiesTableByRowIndex(2,"dermatology")
 
     await pm.navigateTo().veterinariansPage()
-    await pm.onVeterinariansPage().validateVetSpecialityInVetTable("Rafael Ortega","dermatology")
+    await pm.onVeterinariansPage().validateVetSpecialtyInVetTable("Rafael Ortega","dermatology")
 
 // Navigate to SPECIALTIES page, revert the changes renaming "dermatology" back to "surgery"
-    await pm.navigateTo().specialitiesPage()
-    await pm.onSpecialitiesPage().selectEditSpecialityInSpecialitiesTableByRowIndex(2)
-    await pm.onEditSpecialityPage().enterNewSpecialityName('surgery')
-    await pm.onEditSpecialityPage().confirmSpecialityUpdate()
-    await pm.onSpecialitiesPage().validateSpecialityValueInSpecialitiesTableByRowIndex(2,'surgery')
+    await pm.navigateTo().specialtiesPage()
+    await pm.onSpecialtiesPage().selectEditSpecialtyInSpecialtiesTableByRowIndex(2)
+    await pm.onEditSpecialtyPage().enterNewSpecialtyName('surgery')
+    await pm.onEditSpecialtyPage().confirmSpecialtyUpdate()
+    await pm.onSpecialtiesPage().validateSpecialtyValueInSpecialtiesTableByRowIndex(2,'surgery')
 
     await pm.navigateTo().veterinariansPage()
-    await pm.onVeterinariansPage().validateVetSpecialityInVetTable("Rafael Ortega","surgery" )
+    await pm.onVeterinariansPage().validateVetSpecialtyInVetTable("Rafael Ortega","surgery" )
 
 })
 
 test('Validate specialty lists', async ({page}) => {
     const pm = new PageManager(page)
-    await pm.navigateTo().specialitiesPage()
-    await pm.onSpecialitiesPage().addNewSpeciality('oncology')
+    await pm.navigateTo().specialtiesPage()
+    await pm.onSpecialtiesPage().addNewSpecialty('oncology')
 
-    let allSpecialities = await pm.onSpecialitiesPage().createListOfAllSpecialitiesThatAreShownInTable()
+    let allSpecialties = await pm.onSpecialtiesPage().getListOfAllSpecialtiesThatAreShownInTable()
 
-// Edit speciality for target veterinarian sharonJenkins
+// Edit specialty for target veterinarian sharonJenkins
     await pm.navigateTo().veterinariansPage()
     await pm.onVeterinariansPage().clickEditButtonForVet("Sharon Jenkins")
   
-    let dropdownSpecialitiesOptions = await pm.onSpecialitiesPage().createListOfAllSpecialitiesInDropdownOptions()
-    expect(dropdownSpecialitiesOptions).toEqual(allSpecialities)
+    let dropdownSpecialtiesOptions = await pm.onEditVeterinarianPage().getListOfAllSpecialtiesInDropdownOptions()
+    expect(dropdownSpecialtiesOptions).toEqual(allSpecialties)
    
-    await pm.onEditVeterinarianPage().inSpecialitiesDropdownSelectSpecialityCheckbox('oncology')
+    await pm.onEditVeterinarianPage().inSpecialtiesDropdownSelectSpecialtyCheckbox('oncology')
     await pm.onEditVeterinarianPage().clickSaveVetDetails()
 
-// Check updated speciality for target Vet
-    await pm.onVeterinariansPage().validateVetSpecialityInVetTable("Sharon Jenkins","oncology" )
+// Check updated specialty for target Vet
+    await pm.onVeterinariansPage().validateVetSpecialtyInVetTable("Sharon Jenkins","oncology" )
 
-// Delete newly added speciality from the Specialitis list and verify that deleted speciality is also removed for targetVet 
-    await pm.navigateTo().specialitiesPage()
-    await pm.onSpecialitiesPage().deleteSpecialityByName('oncology')
+// Delete newly added specialty from the Specialitis list and verify that deleted specialty is also removed for targetVet 
+    await pm.navigateTo().specialtiesPage()
+    await pm.onSpecialtiesPage().deleteSpecialtyByName('oncology')
     await pm.navigateTo().veterinariansPage()
-    await pm.onVeterinariansPage().validateVetSpecialityInVetTable("Sharon Jenkins","empty" )
+    await pm.onVeterinariansPage().validateVetSpecialtyInVetTable("Sharon Jenkins","empty" )
 
 })

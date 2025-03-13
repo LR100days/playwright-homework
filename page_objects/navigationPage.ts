@@ -23,7 +23,7 @@ export class NavigationPage {
         await expect(this.page.getByRole('heading')).toHaveText('Veterinarians')
     }
 
-    async specialitiesPage(){
+    async specialtiesPage(){
         await this.page.getByRole('link', {name:'Specialties'}).click()
         await expect(this.page.getByRole('heading')).toHaveText('Specialties')
     }
