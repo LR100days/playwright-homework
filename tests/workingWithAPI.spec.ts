@@ -70,3 +70,27 @@ test.describe('veterinarians page', async () => {
       await pm.onVeterinariansPage().validateNumberOfSpecialtiesByVetName('Sharon Jenkins', 10)
   });
 });
+
+test('add and delete an owner', async ({ page, request }) => {
+  await page.goto("/");
+  const pm = new PageManager(page)
+  await pm.navigateTo().ownersPage()
+  await pm.onOwnersPage().addNewOwner('Mike', 'Black', 'Oxford str. 40', 'London', '6083551023')
+  const newOwnerResponse = await page.waitForResponse('https://petclinic-api.bondaracademy.com/petclinic/api/owners')
+  const newOwnerResponseBody = await newOwnerResponse.json()
+  const ownerID = newOwnerResponseBody.id
+
+  await pm.onOwnersPage().validateTableContainsOwnerName('Mike Black')
+  await pm.onOwnersPage().validateOwnerDetailsInTable('Mike Black', 'Oxford str. 40', 'London', '6083551023')
+  
+  const deleteOwnerResponse = await request.delete(`https://petclinic-api.bondaracademy.com/petclinic/api/owners/${ownerID}`, {
+    headers: {
+      Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+    }
+  })
+  expect(deleteOwnerResponse.status()).toEqual(204)
+
+  await page.reload()
+  await pm.onOwnersPage().validateTableDoesNOTcontainOwnerName('Mike Black')
+
+});
