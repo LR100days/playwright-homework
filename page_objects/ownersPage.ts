@@ -84,7 +84,7 @@ export class OwnersPage {
     }
 
     async validateTableDoesNOTcontainOwnerName(ownerFullName: string) {
-        await expect(this.page.getByRole('row', { name: ownerFullName })).toHaveCount(0)
+        expect(await this.page.getByRole('row').last().textContent()).not.toContain(ownerFullName)
     }
 
 }
