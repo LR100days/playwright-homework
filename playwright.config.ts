@@ -27,6 +27,13 @@ export default defineConfig({
         browserName: 'chromium'
       },
     },
+
+    {
+      name: 'firefox',
+      use: { 
+        browserName: 'firefox'
+      },
+    },
   ],
 
 });

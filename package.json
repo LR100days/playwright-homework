@@ -3,7 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "tests-in-chromium" : "npx playwright test --project=chromium",
+    "tests-in-firefox" : "npx playwright test --project=firefox",
+    "UI-mode" : "npx playwright test --ui",
+    "last-failed-tests": "npx playwright test --last-failed"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
