@@ -79,7 +79,9 @@ test('Validate specialty update', async ({page}) => {
 test('Validate specialty lists', async ({page}) => {
     const pm = new PageManager(page)
     await pm.navigateTo().specialtiesPage()
-    await pm.onSpecialtiesPage().addNewSpecialty('oncology')
+
+    const randomSpecialty = await pm.onSpecialtiesPage().generateRandomSpecialty()
+    await pm.onSpecialtiesPage().addNewSpecialty(randomSpecialty)
 
     let allSpecialties = await pm.onSpecialtiesPage().getListOfAllSpecialtiesThatAreShownInTable()
 
@@ -90,15 +92,15 @@ test('Validate specialty lists', async ({page}) => {
     let dropdownSpecialtiesOptions = await pm.onEditVeterinarianPage().getListOfAllSpecialtiesInDropdownOptions()
     expect(dropdownSpecialtiesOptions).toEqual(allSpecialties)
    
-    await pm.onEditVeterinarianPage().inSpecialtiesDropdownSelectSpecialtyCheckbox('oncology')
+    await pm.onEditVeterinarianPage().inSpecialtiesDropdownSelectSpecialtyCheckbox(randomSpecialty)
     await pm.onEditVeterinarianPage().clickSaveVetDetails()
 
 // Check updated specialty for target Vet
-    await pm.onVeterinariansPage().validateVetSpecialtyInVetTable("Sharon Jenkins","oncology" )
+    await pm.onVeterinariansPage().validateVetSpecialtyInVetTable("Sharon Jenkins",randomSpecialty )
 
 // Delete newly added specialty from the Specialitis list and verify that deleted specialty is also removed for targetVet 
     await pm.navigateTo().specialtiesPage()
-    await pm.onSpecialtiesPage().deleteSpecialtyByName('oncology')
+    await pm.onSpecialtiesPage().deleteSpecialtyByName(randomSpecialty)
     await pm.navigateTo().veterinariansPage()
     await pm.onVeterinariansPage().validateVetSpecialtyInVetTable("Sharon Jenkins","empty" )
 

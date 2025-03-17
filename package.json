@@ -4,15 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "tests-in-chromium" : "npx playwright test --project=chromium",
-    "tests-in-firefox" : "npx playwright test --project=firefox",
-    "UI-mode" : "npx playwright test --ui",
+    "tests-in-chromium": "npx playwright test --project=chromium",
+    "tests-in-firefox": "npx playwright test --project=firefox",
+    "UI-mode": "npx playwright test --ui",
     "last-failed-tests": "npx playwright test --last-failed"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@faker-js/faker": "^9.6.0",
     "@playwright/test": "^1.51.0",
     "@types/node": "^20.9.3",
     "dotenv": "^16.3.1"
