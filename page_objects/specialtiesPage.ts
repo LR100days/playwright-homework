@@ -1,9 +1,9 @@
 import { Page, expect } from '@playwright/test';
+import { HelperBase } from '../page_objects/helperBase';
 
-export class SpecialtiesPage {
-    readonly page: Page
+export class SpecialtiesPage extends HelperBase{
     constructor(page: Page){
-        this.page = page
+        super(page)
     }
 
     async deleteSpecialtyByName(specialty: string){

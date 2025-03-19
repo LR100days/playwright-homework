@@ -14,9 +14,11 @@ test('Select the desired date in the calendar', async ({page}) => {
   const birthYear = '2014'
   const birthMonth = '05'
   const birthDay = '02'
-  await pm.onOwnerInformationPage().addNewPet('Tom', birthYear, birthMonth, birthDay, 'dog')
-  await pm.onOwnerInformationPage().validateAddedPetDetailsAre('Tom', birthYear, birthMonth, birthDay, 'dog')
-  await pm.onOwnerInformationPage().deletePet('Tom')
+  const randomPetName = await pm.onOwnerInformationPage().generateRandomPetName()
+
+  await pm.onOwnerInformationPage().addNewPet(randomPetName, birthYear, birthMonth, birthDay, 'dog')
+  await pm.onOwnerInformationPage().validateAddedPetDetailsAre(randomPetName, birthYear, birthMonth, birthDay, 'dog')
+  await pm.onOwnerInformationPage().deletePet(randomPetName)
 });
 
 test('Select the dates of visits and validate dates order.', async ({page}) => {
@@ -25,16 +27,19 @@ test('Select the dates of visits and validate dates order.', async ({page}) => {
   await pm.onOwnerInformationPage().openAddVisitFormFor("Samantha", 'Jean Coleman')
   
   const todayVisitDateIsSelected = await pm.onNewVisitPage().selectDateInTheCalendarOnNewVisitPageToBeToday()
-  await pm.onNewVisitPage().addNewVisitDescription('dermatologists visit')
+  const randomDescriptionForFirstVisit = await pm.onNewVisitPage().generateRandomVisitDescription()
+  await pm.onNewVisitPage().addNewVisitDescription(randomDescriptionForFirstVisit)
   await pm.onNewVisitPage().confirmNewVisit()
   await pm.onOwnerInformationPage().validateVisitDate(todayVisitDateIsSelected)
  
   await pm.onOwnerInformationPage().openAddVisitFormFor("Samantha", 'Jean Coleman')
   await pm.onNewVisitPage().selectDesiredDateInTheCalendarOnNewVisitPageToBeDaysBack(45)
-  await pm.onNewVisitPage().addNewVisitDescription('massage therapy')
-  await pm.onNewVisitPage().confirmNewVisit()
-  await pm.onOwnerInformationPage().validateTwoVisitDatesForPet("Samantha", "dermatologists visit", "massage therapy")
   
-  await pm.onOwnerInformationPage().deleteVisitForPet("Samantha","dermatologists visit")
-  await pm.onOwnerInformationPage().deleteVisitForPet("Samantha","massage therapy")
+  const randomDescriptionForSecondVisit = await pm.onNewVisitPage().generateRandomVisitDescription()
+  await pm.onNewVisitPage().addNewVisitDescription(randomDescriptionForSecondVisit)
+  await pm.onNewVisitPage().confirmNewVisit()
+  await pm.onOwnerInformationPage().validateTwoVisitDatesForPet("Samantha", randomDescriptionForFirstVisit, randomDescriptionForSecondVisit)
+  
+  await pm.onOwnerInformationPage().deleteVisitForPet("Samantha",randomDescriptionForFirstVisit)
+  await pm.onOwnerInformationPage().deleteVisitForPet("Samantha",randomDescriptionForSecondVisit)
 });

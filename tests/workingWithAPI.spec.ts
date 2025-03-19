@@ -75,18 +75,24 @@ test('add and delete an owner', async ({ page, request }) => {
   await page.goto("/");
   const pm = new PageManager(page)
   await pm.navigateTo().ownersPage()
-  await pm.onOwnersPage().addNewOwner('Mike', 'Black', 'Oxford str. 40', 'London', '6083551023')
+
+  const randomOwnerFirstName = await pm.onOwnersPage().generateRandomOwnerFirstName()
+  const randomOwnerLastName = await pm.onOwnersPage().generateRandomOwnerLastName()
+  const randomOwnerAddress = await pm.onOwnersPage().generateRandomOwnerAddress()
+  const randomOwnerCity = await pm.onOwnersPage().generateRandomOwnerCity()
+  const randomOwnerTelephone = await pm.onOwnersPage().generateRandomPhone()
+  await pm.onOwnersPage().addNewOwner(randomOwnerFirstName, randomOwnerLastName, randomOwnerAddress, randomOwnerCity, randomOwnerTelephone)
   const newOwnerResponse = await page.waitForResponse('https://petclinic-api.bondaracademy.com/petclinic/api/owners')
   const newOwnerResponseBody = await newOwnerResponse.json()
   const ownerID = newOwnerResponseBody.id
 
-  await pm.onOwnersPage().validateTableContainsOwnerName('Mike Black')
-  await pm.onOwnersPage().validateOwnerDetailsInTable('Mike Black', 'Oxford str. 40', 'London', '6083551023')
+  await pm.onOwnersPage().validateTableContainsOwnerName(`${randomOwnerFirstName} ${randomOwnerLastName}`)
+  await pm.onOwnersPage().validateOwnerDetailsInTable(`${randomOwnerFirstName} ${randomOwnerLastName}`, randomOwnerAddress, randomOwnerCity, randomOwnerTelephone)
   
   const deleteOwnerResponse = await request.delete(`https://petclinic-api.bondaracademy.com/petclinic/api/owners/${ownerID}`)
   expect(deleteOwnerResponse.status()).toEqual(204)
 
   await page.reload()
-  await pm.onOwnersPage().validateTableDoesNOTcontainOwnerName('Mike Black')
+  await pm.onOwnersPage().validateTableDoesNOTcontainOwnerName(`${randomOwnerFirstName} ${randomOwnerLastName}`)
 
 });

@@ -6,8 +6,9 @@ test('Add and delete pet type', async ({page}) => {
     const pm = new PageManager(page)
     await pm.navigateTo().petTypesPage()
     await pm.onPetTypePage().clickAddButtonToOpenPetTypeInputForm()
-    await pm.onPetTypePage().addNewPetType("pig")
-    const lastRowInTable = await pm.onPetTypePage().validateLastRowPetType('pig')
+    const randomPetType = await pm.onPetTypePage().generateRandomPetType()
+    await pm.onPetTypePage().addNewPetType(randomPetType)
+    const lastRowInTable = await pm.onPetTypePage().validateLastRowPetType(randomPetType)
     await pm.onPetTypePage().deleteTheLastPetTypeInThePetsTable()
-    await expect(lastRowInTable).not.toHaveValue('pig');
+    await expect(lastRowInTable).not.toHaveValue(randomPetType);
 })
