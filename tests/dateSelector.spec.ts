@@ -18,7 +18,7 @@ test('Select the desired date in the calendar', async ({page}) => {
 
   await pm.onOwnerInformationPage().addNewPet(randomPetName, birthYear, birthMonth, birthDay, 'dog')
   await pm.onOwnerInformationPage().validateAddedPetDetailsAre(randomPetName, birthYear, birthMonth, birthDay, 'dog')
-  await pm.onOwnerInformationPage().deletePet(randomPetName)
+  await pm.onOwnerInformationPage().deletePetAndValidateResult(randomPetName)
 });
 
 test('Select the dates of visits and validate dates order.', async ({page}) => {
@@ -40,6 +40,6 @@ test('Select the dates of visits and validate dates order.', async ({page}) => {
   await pm.onNewVisitPage().confirmNewVisit()
   await pm.onOwnerInformationPage().validateTwoVisitDatesForPet("Samantha", randomDescriptionForFirstVisit, randomDescriptionForSecondVisit)
   
-  await pm.onOwnerInformationPage().deleteVisitForPet("Samantha",randomDescriptionForFirstVisit)
-  await pm.onOwnerInformationPage().deleteVisitForPet("Samantha",randomDescriptionForSecondVisit)
+  await pm.onOwnerInformationPage().deleteVisitAndValidateResultForPet("Samantha",randomDescriptionForFirstVisit)
+  await pm.onOwnerInformationPage().deleteVisitAndValidateResultForPet("Samantha",randomDescriptionForSecondVisit)
 });
