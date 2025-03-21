@@ -1,9 +1,11 @@
-import { APIRequestContext, expect } from '@playwright/test';
-import { faker } from '@faker-js/faker'
+import { APIRequestContext, expect, Page } from '@playwright/test';
+import { HelperBase } from './helperBase';
 
-export class ApiHelper{
+export class ApiHelper extends HelperBase{
 
-    constructor() {}
+    constructor(page: Page){
+            super(page)
+        }
 
     async deleteOwnerByApiUsingOwnerId( request: APIRequestContext, ownerID: string){
         const deleteOwnerResponse =  await request.delete(`https://petclinic-api.bondaracademy.com/petclinic/api/owners/${ownerID}`)
@@ -11,9 +13,10 @@ export class ApiHelper{
     }
 
     async createOwnerByApi( request: APIRequestContext, ownerFirstName: string, ownerLastName: string){
-        const randomOwnerAddress = faker.location.streetAddress()
-        const randomOwnerCity = faker.location.city()
-        const randomOwnerTelephone = faker.number.int({ min: 1000000000, max: 9999999999 }).toString();
+        const randomOwnerAddress = await this.generateRandomOwnerAddress()
+        const randomOwnerCity = await this.generateRandomOwnerCity()
+        const randomOwnerTelephone = await this.generateRandomPhone()
+    
         const ownerResponse = await request.post('https://petclinic-api.bondaracademy.com/petclinic/api/owners', {
             data: {
                 "firstName": ownerFirstName,
@@ -30,11 +33,10 @@ export class ApiHelper{
     }
 
     async addPetToOwnerByApi(request: APIRequestContext, ownerId: string, petName: string){
-        const pastDate = faker.date.past({ years: 1 })
-        const randomPetBirthDay = pastDate.toISOString().split('T')[0];
-        const randomPetType = faker.animal.type()
-        const randomPetTypeId = faker.number.int({ min: 1480, max: 1490 }).toString();
-        const randomPetId = faker.number.int({ min: 1996, max: 2006 }).toString();
+        const randomPetBirthDay = await this.generateRandomPetBirthDayDate()
+        const randomPetType = await this.generateRandomPetType()
+        const randomPetTypeId = await this.generateRandomPetTypeId()
+        const randomPetId = await this.generateRandomPetId()
 
         const addPetToOwnerResponse = await request.post(`https://petclinic-api.bondaracademy.com/petclinic/api/owners/${ownerId}/pets`, {
             data: {
@@ -57,9 +59,7 @@ export class ApiHelper{
     }
 
     async addVisitForPetByApi(request: APIRequestContext, ownerId: string, petId: string, visitDescription: string){
-        const futureDate = faker.date.past({ years: 1 })
-        const visitDate = futureDate.toISOString().split('T')[0];
-
+        const visitDate = await this.generateDateInTheFutureYear()
         const addVisitForPetResponse = await request.post(`https://petclinic-api.bondaracademy.com/petclinic/api/owners/${ownerId}/pets/${petId}/visits`, {
             data: {
                 "date": visitDate,

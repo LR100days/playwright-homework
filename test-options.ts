@@ -1,7 +1,7 @@
 import { test as base } from '@playwright/test'
 import { PageManager } from './page_objects/pageManager'
-import { faker } from '@faker-js/faker'
 import { ApiHelper } from './page_objects/apiHelper'
+import { HelperBase } from './page_objects/helperBase'
 
 export type TestOptions = {
     createOwnerWithPetAndVisitPrecondition:{
@@ -16,16 +16,17 @@ export type TestOptions = {
 
 export const test = base.extend<TestOptions>({
     createOwnerWithPetAndVisitPrecondition: async({page, request}, use) => {
-        const randomOwnerFirstName = faker.person.firstName()
-        const randomOwnerLastName = faker.person.lastName()
+        const helperBase = new HelperBase(page);
+        const randomOwnerFirstName = await  helperBase.generateRandomOwnerFirstName()
+        const randomOwnerLastName = await helperBase.generateRandomOwnerLastName()
         
-        const apiHelper = new ApiHelper();
+        const apiHelper = new ApiHelper(page);
         const ownerID = await apiHelper.createOwnerByApi(request, randomOwnerFirstName, randomOwnerLastName)
 
-        const randomPetName = faker.animal.petName()
+        const randomPetName = await helperBase.generateRandomPetName()
         const petID = await apiHelper.addPetToOwnerByApi(request, ownerID, randomPetName)
 
-        const randomVisitDescription = faker.lorem.sentence(5)
+        const randomVisitDescription = await helperBase.generateRandomVisitDescription()
         await apiHelper.addVisitForPetByApi(request, ownerID, petID, randomVisitDescription)
 
         await page.goto("/");

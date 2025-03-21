@@ -58,4 +58,31 @@ export class HelperBase{
         const randomSpec = faker.person.jobArea()
         return randomSpec
     }
+
+    async generateDateInThePastYear(){
+        const randomPastDate = faker.date.past({ years: 1 })
+        return randomPastDate
+    }
+
+    async generateDateInTheFutureYear(){
+        const randomFutureDate = faker.date.future({ years: 1 })
+        const randomFutureDateToString = randomFutureDate.toISOString().split('T')[0];
+        return randomFutureDateToString
+    }
+
+    async generateRandomPetBirthDayDate(){
+        const pastDate = await this.generateDateInThePastYear()
+        const randomPetBirthDay = pastDate.toISOString().split('T')[0];
+        return randomPetBirthDay
+    }
+
+    async generateRandomPetId(){
+        const randomPetId = faker.number.int({ min: 1996, max: 2006 }).toString();
+        return randomPetId
+    }
+
+    async generateRandomPetTypeId(){
+        const randomPetTypeId = faker.number.int({ min: 1480, max: 1490 }).toString();
+        return randomPetTypeId
+    }
 }
