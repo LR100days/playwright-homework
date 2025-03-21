@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { PageManager } from '../page_objects/pageManager';
 import ownersDetails from '../test-data/ownersDetails.json'
 import specialties from '../test-data/specialties.json'
+import { ApiHelper } from '../page_objects/apiHelper'
 
 test.describe('owners page', async () => {
   test.beforeEach( async({page}) => {
@@ -89,8 +90,8 @@ test('add and delete an owner', async ({ page, request }) => {
   await pm.onOwnersPage().validateTableContainsOwnerName(`${randomOwnerFirstName} ${randomOwnerLastName}`)
   await pm.onOwnersPage().validateOwnerDetailsInTable(`${randomOwnerFirstName} ${randomOwnerLastName}`, randomOwnerAddress, randomOwnerCity, randomOwnerTelephone)
   
-  const deleteOwnerResponse = await request.delete(`https://petclinic-api.bondaracademy.com/petclinic/api/owners/${ownerID}`)
-  expect(deleteOwnerResponse.status()).toEqual(204)
+  const apiHelper = new ApiHelper();
+  await apiHelper.deleteOwnerByApiUsingOwnerId(request, ownerID)
 
   await page.reload()
   await pm.onOwnersPage().validateTableDoesNOTcontainOwnerName(`${randomOwnerFirstName} ${randomOwnerLastName}`)
