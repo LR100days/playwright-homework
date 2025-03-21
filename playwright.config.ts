@@ -12,7 +12,6 @@ export default defineConfig({
   globalTimeout: 100000,
   expect:{
     timeout: 40000,
-    toMatchSnapshot: {maxDiffPixels: 50}
   },
   use: {
     baseURL: 'https://petclinic.bondaracademy.com',
