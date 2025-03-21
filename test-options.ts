@@ -16,24 +16,18 @@ export type TestOptions = {
 
 export const test = base.extend<TestOptions>({
     createOwnerWithPetAndVisitPrecondition: async({page, request}, use) => {
-        const helperBase = new HelperBase(page);
-        const randomOwnerFirstName = await  helperBase.generateRandomOwnerFirstName()
-        const randomOwnerLastName = await helperBase.generateRandomOwnerLastName()
-        
         const apiHelper = new ApiHelper(request);
-        const ownerID = await apiHelper.createOwnerByApi(randomOwnerFirstName, randomOwnerLastName)
+        const ownerDetails = await apiHelper.createRandomOwnerByApi()
 
-        const randomPetName = await helperBase.generateRandomPetName()
-        const petID = await apiHelper.addPetToOwnerByApi(ownerID, randomPetName)
+        const petDetails = await apiHelper.addPetToOwnerByApi(ownerDetails.ownerId)
 
-        const randomVisitDescription = await helperBase.generateRandomVisitDescription()
-        await apiHelper.addVisitForPetByApi(ownerID, petID, randomVisitDescription)
+        const petVisitDescription = await apiHelper.addVisitForPetByApi(ownerDetails.ownerId, petDetails.petId)
 
         await page.goto("/");
         
-        await use({ petName: randomPetName, visitDescription: randomVisitDescription, ownerFullName: `${randomOwnerFirstName} ${randomOwnerLastName}` })
+        await use({ petName: petDetails.petName, visitDescription: petVisitDescription, ownerFullName: ownerDetails.randomOwnerFullName })
         
-        await apiHelper.deleteOwnerByApiUsingOwnerId(ownerID); 
+        await apiHelper.deleteOwnerByApiUsingOwnerId(ownerDetails.ownerId); 
     },
 
     pageManager: async({page}, use) => {

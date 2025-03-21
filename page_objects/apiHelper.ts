@@ -16,16 +16,18 @@ export class ApiHelper{
         expect(deleteOwnerResponse.status()).toEqual(204);
     }
 
-    async createOwnerByApi(ownerFirstName: string, ownerLastName: string){
+    async createRandomOwnerByApi(){
         const helperBase = new HelperBase(this.page)
+        const randomOwnerFirstName = await  helperBase.generateRandomOwnerFirstName()
+        const randomOwnerLastName = await helperBase.generateRandomOwnerLastName()
         const randomOwnerAddress = await helperBase.generateRandomOwnerAddress()
         const randomOwnerCity = await helperBase.generateRandomOwnerCity()
         const randomOwnerTelephone = await helperBase.generateRandomPhone()
     
         const ownerResponse = await this.request.post('https://petclinic-api.bondaracademy.com/petclinic/api/owners', {
             data: {
-                "firstName": ownerFirstName,
-                "lastName": ownerLastName,
+                "firstName": randomOwnerFirstName,
+                "lastName": randomOwnerLastName,
                 "address": randomOwnerAddress,
                 "city": randomOwnerCity,
                 "telephone": randomOwnerTelephone
@@ -34,11 +36,15 @@ export class ApiHelper{
         expect(ownerResponse.status()).toEqual(201);
         const ownerResponseBody = await ownerResponse.json();
         const ownerID = await ownerResponseBody.id;
-        return ownerID
+        return {
+            ownerId: ownerID, 
+            randomOwnerFullName: `${randomOwnerFirstName} ${randomOwnerLastName}`
+            };  
     }
 
-    async addPetToOwnerByApi(ownerId: string, petName: string){
+    async addPetToOwnerByApi(ownerId: string){
         const helperBase = new HelperBase(this.page)
+        const randomPetName = await helperBase.generateRandomPetName()
         const randomPetBirthDay = await helperBase.generateRandomPetBirthDayDate()
         const randomPetType = await helperBase.generateRandomPetType()
         const randomPetTypeId = await helperBase.generateRandomPetTypeId()
@@ -46,7 +52,7 @@ export class ApiHelper{
 
         const addPetToOwnerResponse = await this.request.post(`https://petclinic-api.bondaracademy.com/petclinic/api/owners/${ownerId}/pets`, {
             data: {
-                "name": petName,
+                "name": randomPetName,
                 "birthDate": randomPetBirthDay,
                 "type": {
                     "name": randomPetType,
@@ -61,19 +67,24 @@ export class ApiHelper{
         expect(addPetToOwnerResponse.status()).toEqual(201);
         const addPetToOwnerResponseBody = await addPetToOwnerResponse.json();
         const petID = await addPetToOwnerResponseBody.id;
-        return petID
+        return {
+            petId: petID, 
+            petName: randomPetName
+            };
     }
 
-    async addVisitForPetByApi(ownerId: string, petId: string, visitDescription: string){
+    async addVisitForPetByApi(ownerId: string, petId: string){
         const helperBase = new HelperBase(this.page)
+        const randomVisitDescription = await helperBase.generateRandomVisitDescription()
         const visitDate = await helperBase.generateDateInTheFutureYear()
         const addVisitForPetResponse = await this.request.post(`https://petclinic-api.bondaracademy.com/petclinic/api/owners/${ownerId}/pets/${petId}/visits`, {
             data: {
                 "date": visitDate,
-                "description": visitDescription
+                "description": randomVisitDescription
             },
         })
         expect(addVisitForPetResponse.status()).toEqual(201);
+        return randomVisitDescription
     }
    
 }
