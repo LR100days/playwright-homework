@@ -1,7 +1,6 @@
 import { test as base } from '@playwright/test'
 import { PageManager } from './page_objects/pageManager'
 import { ApiHelper } from './page_objects/apiHelper'
-import { HelperBase } from './page_objects/helperBase'
 
 export type TestOptions = {
     createOwnerWithPetAndVisitPrecondition:{
