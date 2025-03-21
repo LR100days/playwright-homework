@@ -1,23 +1,28 @@
 import { APIRequestContext, expect, Page } from '@playwright/test';
 import { HelperBase } from './helperBase';
 
-export class ApiHelper extends HelperBase{
+export class ApiHelper{
 
-    constructor(page: Page){
-            super(page)
-        }
+    readonly request: APIRequestContext;
+    readonly page: Page
 
-    async deleteOwnerByApiUsingOwnerId( request: APIRequestContext, ownerID: string){
-        const deleteOwnerResponse =  await request.delete(`https://petclinic-api.bondaracademy.com/petclinic/api/owners/${ownerID}`)
+    constructor(request: APIRequestContext) {
+        this.request = request;
+        
+    }
+
+    async deleteOwnerByApiUsingOwnerId( ownerID: string){
+        const deleteOwnerResponse =  await this.request.delete(`https://petclinic-api.bondaracademy.com/petclinic/api/owners/${ownerID}`)
         expect(deleteOwnerResponse.status()).toEqual(204);
     }
 
-    async createOwnerByApi( request: APIRequestContext, ownerFirstName: string, ownerLastName: string){
-        const randomOwnerAddress = await this.generateRandomOwnerAddress()
-        const randomOwnerCity = await this.generateRandomOwnerCity()
-        const randomOwnerTelephone = await this.generateRandomPhone()
+    async createOwnerByApi(ownerFirstName: string, ownerLastName: string){
+        const helperBase = new HelperBase(this.page)
+        const randomOwnerAddress = await helperBase.generateRandomOwnerAddress()
+        const randomOwnerCity = await helperBase.generateRandomOwnerCity()
+        const randomOwnerTelephone = await helperBase.generateRandomPhone()
     
-        const ownerResponse = await request.post('https://petclinic-api.bondaracademy.com/petclinic/api/owners', {
+        const ownerResponse = await this.request.post('https://petclinic-api.bondaracademy.com/petclinic/api/owners', {
             data: {
                 "firstName": ownerFirstName,
                 "lastName": ownerLastName,
@@ -32,13 +37,14 @@ export class ApiHelper extends HelperBase{
         return ownerID
     }
 
-    async addPetToOwnerByApi(request: APIRequestContext, ownerId: string, petName: string){
-        const randomPetBirthDay = await this.generateRandomPetBirthDayDate()
-        const randomPetType = await this.generateRandomPetType()
-        const randomPetTypeId = await this.generateRandomPetTypeId()
-        const randomPetId = await this.generateRandomPetId()
+    async addPetToOwnerByApi(ownerId: string, petName: string){
+        const helperBase = new HelperBase(this.page)
+        const randomPetBirthDay = await helperBase.generateRandomPetBirthDayDate()
+        const randomPetType = await helperBase.generateRandomPetType()
+        const randomPetTypeId = await helperBase.generateRandomPetTypeId()
+        const randomPetId = await helperBase.generateRandomPetId()
 
-        const addPetToOwnerResponse = await request.post(`https://petclinic-api.bondaracademy.com/petclinic/api/owners/${ownerId}/pets`, {
+        const addPetToOwnerResponse = await this.request.post(`https://petclinic-api.bondaracademy.com/petclinic/api/owners/${ownerId}/pets`, {
             data: {
                 "name": petName,
                 "birthDate": randomPetBirthDay,
@@ -58,9 +64,10 @@ export class ApiHelper extends HelperBase{
         return petID
     }
 
-    async addVisitForPetByApi(request: APIRequestContext, ownerId: string, petId: string, visitDescription: string){
-        const visitDate = await this.generateDateInTheFutureYear()
-        const addVisitForPetResponse = await request.post(`https://petclinic-api.bondaracademy.com/petclinic/api/owners/${ownerId}/pets/${petId}/visits`, {
+    async addVisitForPetByApi(ownerId: string, petId: string, visitDescription: string){
+        const helperBase = new HelperBase(this.page)
+        const visitDate = await helperBase.generateDateInTheFutureYear()
+        const addVisitForPetResponse = await this.request.post(`https://petclinic-api.bondaracademy.com/petclinic/api/owners/${ownerId}/pets/${petId}/visits`, {
             data: {
                 "date": visitDate,
                 "description": visitDescription

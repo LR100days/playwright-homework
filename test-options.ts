@@ -20,20 +20,20 @@ export const test = base.extend<TestOptions>({
         const randomOwnerFirstName = await  helperBase.generateRandomOwnerFirstName()
         const randomOwnerLastName = await helperBase.generateRandomOwnerLastName()
         
-        const apiHelper = new ApiHelper(page);
-        const ownerID = await apiHelper.createOwnerByApi(request, randomOwnerFirstName, randomOwnerLastName)
+        const apiHelper = new ApiHelper(request);
+        const ownerID = await apiHelper.createOwnerByApi(randomOwnerFirstName, randomOwnerLastName)
 
         const randomPetName = await helperBase.generateRandomPetName()
-        const petID = await apiHelper.addPetToOwnerByApi(request, ownerID, randomPetName)
+        const petID = await apiHelper.addPetToOwnerByApi(ownerID, randomPetName)
 
         const randomVisitDescription = await helperBase.generateRandomVisitDescription()
-        await apiHelper.addVisitForPetByApi(request, ownerID, petID, randomVisitDescription)
+        await apiHelper.addVisitForPetByApi(ownerID, petID, randomVisitDescription)
 
         await page.goto("/");
         
         await use({ petName: randomPetName, visitDescription: randomVisitDescription, ownerFullName: `${randomOwnerFirstName} ${randomOwnerLastName}` })
         
-        await apiHelper.deleteOwnerByApiUsingOwnerId(request, ownerID); 
+        await apiHelper.deleteOwnerByApiUsingOwnerId(ownerID); 
     },
 
     pageManager: async({page}, use) => {

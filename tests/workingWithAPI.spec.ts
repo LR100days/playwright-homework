@@ -90,8 +90,8 @@ test('add and delete an owner', async ({ page, request }) => {
   await pm.onOwnersPage().validateTableContainsOwnerName(`${randomOwnerFirstName} ${randomOwnerLastName}`)
   await pm.onOwnersPage().validateOwnerDetailsInTable(`${randomOwnerFirstName} ${randomOwnerLastName}`, randomOwnerAddress, randomOwnerCity, randomOwnerTelephone)
   
-  const apiHelper = new ApiHelper(page);
-  await apiHelper.deleteOwnerByApiUsingOwnerId(request, ownerID)
+  const apiHelper = new ApiHelper(request);
+  await apiHelper.deleteOwnerByApiUsingOwnerId(ownerID)
 
   await page.reload()
   await pm.onOwnersPage().validateTableDoesNOTcontainOwnerName(`${randomOwnerFirstName} ${randomOwnerLastName}`)
