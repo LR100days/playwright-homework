@@ -1,10 +1,9 @@
 import { APIRequestContext, expect, Page } from '@playwright/test';
-import { HelperBase } from './helperBase';
+import { DataGenerationHelper } from '../utils/dataGenerationHelper';
 
 export class ApiHelper{
 
     readonly request: APIRequestContext;
-    readonly page: Page
 
     constructor(request: APIRequestContext) {
         this.request = request;
@@ -17,12 +16,12 @@ export class ApiHelper{
     }
 
     async createRandomOwnerByApi(){
-        const helperBase = new HelperBase(this.page)
-        const randomOwnerFirstName = await  helperBase.generateRandomOwnerFirstName()
-        const randomOwnerLastName = await helperBase.generateRandomOwnerLastName()
-        const randomOwnerAddress = await helperBase.generateRandomOwnerAddress()
-        const randomOwnerCity = await helperBase.generateRandomOwnerCity()
-        const randomOwnerTelephone = await helperBase.generateRandomPhone()
+        const testDataHelper = new DataGenerationHelper()
+        const randomOwnerFirstName = await testDataHelper.generateRandomOwnerFirstName()
+        const randomOwnerLastName = await testDataHelper.generateRandomOwnerLastName()
+        const randomOwnerAddress = await testDataHelper.generateRandomOwnerAddress()
+        const randomOwnerCity = await testDataHelper.generateRandomOwnerCity()
+        const randomOwnerTelephone = await testDataHelper.generateRandomPhone()
     
         const ownerResponse = await this.request.post('https://petclinic-api.bondaracademy.com/petclinic/api/owners', {
             data: {
@@ -43,12 +42,12 @@ export class ApiHelper{
     }
 
     async addPetToOwnerByApi(ownerId: string){
-        const helperBase = new HelperBase(this.page)
-        const randomPetName = await helperBase.generateRandomPetName()
-        const randomPetBirthDay = await helperBase.generateRandomPetBirthDayDate()
-        const randomPetType = await helperBase.generateRandomPetType()
-        const randomPetTypeId = await helperBase.generateRandomPetTypeId()
-        const randomPetId = await helperBase.generateRandomPetId()
+        const testDataHelper = new DataGenerationHelper()
+        const randomPetName = await testDataHelper.generateRandomPetName()
+        const randomPetBirthDay = await testDataHelper.generateRandomPetBirthDayDate()
+        const randomPetType = await testDataHelper.generateRandomPetType()
+        const randomPetTypeId = await testDataHelper.generateRandomPetTypeId()
+        const randomPetId = await testDataHelper.generateRandomPetId()
 
         const addPetToOwnerResponse = await this.request.post(`https://petclinic-api.bondaracademy.com/petclinic/api/owners/${ownerId}/pets`, {
             data: {
@@ -74,9 +73,9 @@ export class ApiHelper{
     }
 
     async addVisitForPetByApi(ownerId: string, petId: string){
-        const helperBase = new HelperBase(this.page)
-        const randomVisitDescription = await helperBase.generateRandomVisitDescription()
-        const visitDate = await helperBase.generateDateInTheFutureYear()
+        const testDataHelper = new DataGenerationHelper()
+        const randomVisitDescription = await testDataHelper.generateRandomVisitDescription()
+        const visitDate = await testDataHelper.generateDateInTheFutureYear()
         const addVisitForPetResponse = await this.request.post(`https://petclinic-api.bondaracademy.com/petclinic/api/owners/${ownerId}/pets/${petId}/visits`, {
             data: {
                 "date": visitDate,

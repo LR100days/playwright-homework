@@ -1,9 +1,9 @@
 import { Page, expect } from '@playwright/test';
-import { HelperBase } from '../page_objects/helperBase';
 
-export class NewVisitPage extends HelperBase{
+export class NewVisitPage {
+    readonly page: Page
     constructor(page: Page){
-        super(page)
+        this.page = page
     }
 
     async addNewVisitDescription(description: string){

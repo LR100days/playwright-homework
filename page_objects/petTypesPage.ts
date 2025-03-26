@@ -1,9 +1,9 @@
 import { Page, expect } from '@playwright/test';
-import { HelperBase } from '../page_objects/helperBase';
 
-export class PetTypesPage extends HelperBase{
+export class PetTypesPage {
+    readonly page: Page
     constructor(page: Page){
-        super(page)
+        this.page = page
     }
 
     async clickAddButtonToOpenPetTypeInputForm(){

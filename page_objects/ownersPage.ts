@@ -1,9 +1,9 @@
 import { Page, expect } from '@playwright/test';
-import { HelperBase } from '../page_objects/helperBase';
 
-export class OwnersPage extends HelperBase {
+export class OwnersPage {
+    readonly page: Page
     constructor(page: Page){
-        super(page)
+        this.page = page
     }
 
     async selectOwnerFromOwnersTableByName(ownerName: string){

@@ -1,5 +1,6 @@
 import { test } from '@playwright/test';
 import { PageManager } from '../page_objects/pageManager';
+import { DataGenerationHelper } from '../utils/dataGenerationHelper';
 
 test.beforeEach( async({page}) => {
   await page.goto('/');
@@ -12,7 +13,8 @@ test.describe("Interacting with Input Fields practice", async () => {
         const pm = new PageManager(page)
         await pm.onPetTypePage().clickEditbuttonForPetType('cat')
 
-        const randomPetType = await pm.onEditPetTypePage().generateRandomPetType()
+        const testDataHelper = new DataGenerationHelper()
+        const randomPetType = await testDataHelper.generateRandomPetType()
 
         await pm.onEditPetTypePage().enterNewPetTypeName(randomPetType)
         await pm.onEditPetTypePage().confirmPetTypeNameUpdating()
@@ -29,7 +31,8 @@ test.describe("Interacting with Input Fields practice", async () => {
         const pm = new PageManager(page)
         await pm.onPetTypePage().clickEditbuttonForPetType('dog')
 
-        const randomPetType = await pm.onEditPetTypePage().generateRandomPetType()
+        const testDataHelper = new DataGenerationHelper()
+        const randomPetType = await testDataHelper.generateRandomPetType()
         await pm.onEditPetTypePage().enterNewPetTypeName(randomPetType)
         await pm.onEditPetTypePage().clickCancelButtonForPetTypeUpdating()
         await pm.onPetTypePage().validatePetTypeValueByRowIndex('1','dog')

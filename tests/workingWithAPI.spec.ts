@@ -2,7 +2,8 @@ import { test, expect } from '@playwright/test';
 import { PageManager } from '../page_objects/pageManager';
 import ownersDetails from '../test-data/ownersDetails.json'
 import specialties from '../test-data/specialties.json'
-import { ApiHelper } from '../page_objects/apiHelper'
+import { ApiHelper } from '../utils/apiHelper';
+import { DataGenerationHelper } from '../utils/dataGenerationHelper';
 
 test.describe('owners page', async () => {
   test.beforeEach( async({page}) => {
@@ -77,11 +78,12 @@ test('add and delete an owner', async ({ page, request }) => {
   const pm = new PageManager(page)
   await pm.navigateTo().ownersPage()
 
-  const randomOwnerFirstName = await pm.onOwnersPage().generateRandomOwnerFirstName()
-  const randomOwnerLastName = await pm.onOwnersPage().generateRandomOwnerLastName()
-  const randomOwnerAddress = await pm.onOwnersPage().generateRandomOwnerAddress()
-  const randomOwnerCity = await pm.onOwnersPage().generateRandomOwnerCity()
-  const randomOwnerTelephone = await pm.onOwnersPage().generateRandomPhone()
+  const testDataHelper = new DataGenerationHelper()
+  const randomOwnerFirstName = await testDataHelper.generateRandomOwnerFirstName()
+  const randomOwnerLastName = await testDataHelper.generateRandomOwnerLastName()
+  const randomOwnerAddress = await testDataHelper.generateRandomOwnerAddress()
+  const randomOwnerCity = await testDataHelper.generateRandomOwnerCity()
+  const randomOwnerTelephone = await testDataHelper.generateRandomPhone()
   await pm.onOwnersPage().addNewOwner(randomOwnerFirstName, randomOwnerLastName, randomOwnerAddress, randomOwnerCity, randomOwnerTelephone)
   const newOwnerResponse = await page.waitForResponse('https://petclinic-api.bondaracademy.com/petclinic/api/owners')
   const newOwnerResponseBody = await newOwnerResponse.json()
