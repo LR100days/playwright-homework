@@ -25,7 +25,7 @@ export class EditPetTypePage{
 
     async confirmPetTypeNameUpdating(){
         await this.page.getByRole('button', {name:"Update"}).click();
-        await this.page.waitForURL('/pettypes')
+        
     }
 
     async clickCancelButtonForPetTypeUpdating(){
