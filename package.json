@@ -7,7 +7,8 @@
     "tests-in-chromium": "npx playwright test --project=chromium",
     "tests-in-firefox": "npx playwright test --project=firefox",
     "UI-mode": "npx playwright test --ui",
-    "last-failed-tests": "npx playwright test --last-failed"
+    "last-failed-tests": "npx playwright test --last-failed",
+    "update-all-baseline-screenshots": "npx playwright test --update-snapshot"
   },
   "keywords": [],
   "author": "",

@@ -36,6 +36,7 @@ test('Add and delete veterinarian', async ({page, request}) => {
         },
         headers: {
             Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+            "Content-Type": 'application/json',
         },
     })
     expect(veterinarianResponse.status()).toEqual(201);

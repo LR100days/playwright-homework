@@ -27,6 +27,12 @@ export class NavigationPage {
         await this.page.getByRole('link', {name:'Specialties'}).click()
         await expect(this.page.getByRole('heading')).toHaveText('Specialties')
     }
+
+    async addNewOwnerPage(){
+        await this.page.getByRole('button', {name:"Owners"}).click();
+        await this.page.getByRole('link', {name:"Add new"}).click();
+        await expect(this.page.getByRole('heading')).toHaveText('New Owner')
+    }
     
 }
 

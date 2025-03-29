@@ -81,7 +81,8 @@ test('add and delete an owner', async ({ page, request }) => {
   const randomOwnerAddress = await pm.onOwnersPage().generateRandomOwnerAddress()
   const randomOwnerCity = await pm.onOwnersPage().generateRandomOwnerCity()
   const randomOwnerTelephone = await pm.onOwnersPage().generateRandomPhone()
-  await pm.onOwnersPage().addNewOwner(randomOwnerFirstName, randomOwnerLastName, randomOwnerAddress, randomOwnerCity, randomOwnerTelephone)
+  
+  await pm.onAddNewOwnerPage().addNewOwner(randomOwnerFirstName, randomOwnerLastName, randomOwnerAddress, randomOwnerCity, randomOwnerTelephone)
   const newOwnerResponse = await page.waitForResponse('https://petclinic-api.bondaracademy.com/petclinic/api/owners')
   const newOwnerResponseBody = await newOwnerResponse.json()
   const ownerID = newOwnerResponseBody.id
