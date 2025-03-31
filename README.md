@@ -1,5 +1,5 @@
 # Playwright Homework
-A framework template to perform homework for the class "SDET with Playwright"
+A framework template to perform homework for the prepaid class "SDET with Playwright". Access to the test website is available only when course subscription is active.
 
 ## Configuration
 1. Create ```.env``` file in the root of the project. Use the ```.env-SAMPLE``` as an example
