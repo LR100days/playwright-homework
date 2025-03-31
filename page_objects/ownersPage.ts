@@ -60,16 +60,6 @@ export class OwnersPage {
         await expect(countOfOwnersInTable).toHaveCount(expectedRowsCount)
     }
 
-    async addNewOwner(ownerFirstName: string, ownerLastName: string, address: string, city: string, phone: string ){
-        await this.page.getByRole('button', {name: 'Add Owner'}).click()
-        await this.page.getByRole('textbox', {name: 'First Name'}).fill(ownerFirstName)
-        await this.page.getByRole('textbox', {name: 'Last Name'}).fill(ownerLastName)
-        await this.page.getByRole('textbox', {name: 'Address'}).fill(address)
-        await this.page.getByRole('textbox', {name: 'City'}).fill(city)
-        await this.page.getByRole('textbox', {name: 'Telephone'}).fill(phone)
-        await this.page.getByRole('button', {name: 'Add Owner'}).click()
-    }
-
     async validateOwnerDetailsInTable(ownerFullName: string, address: string, city: string, phone: string ){
         const ownerRow = this.page.getByRole('row', {name: ownerFullName})
         expect(await ownerRow.locator("td").nth(0).textContent()).toEqual(ownerFullName);
