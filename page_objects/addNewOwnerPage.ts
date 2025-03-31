@@ -1,5 +1,6 @@
-import { Page, expect } from '@playwright/test';
+import { Page } from '@playwright/test';
 import { HelperBase } from '../page_objects/helperBase';
+import { DataGenerationHelper } from '../utils/dataGenerationHelper';
 
 export class AddNewOwnerPage extends HelperBase{
     constructor(page: Page){
@@ -18,16 +19,17 @@ export class AddNewOwnerPage extends HelperBase{
     }
     
     async fillTheNewOwnerInformationWithRandomData(){
-        const randomOwnerFirstName = await this.generateRandomOwnerFirstName()
-        const randomOwnerLastName = await this.generateRandomOwnerLastName()
-        const randomOwnerAddress = await this.generateRandomOwnerAddress()
-        const randomOwnerCity = await this.generateRandomOwnerCity()
-        const randomOwnerTelephone = await this.generateRandomPhone()
+        const testDataHelper = new DataGenerationHelper()
+        const randomOwnerFirstName = await testDataHelper.generateRandomOwnerFirstName()
+        const randomOwnerLastName = await testDataHelper.generateRandomOwnerLastName()
+        const randomOwnerAddress = await testDataHelper.generateRandomOwnerAddress()
+        const randomOwnerCity = await testDataHelper.generateRandomOwnerCity()
+        const randomOwnerTelephone = await testDataHelper.generateRandomPhone()
         await this.page.getByRole('textbox', {name: 'First Name'}).fill(randomOwnerFirstName)
         await this.page.getByRole('textbox', {name: 'Last Name'}).fill(randomOwnerLastName)
         await this.page.getByRole('textbox', {name: 'Address'}).fill(randomOwnerAddress)
         await this.page.getByRole('textbox', {name: 'City'}).fill(randomOwnerCity)
         await this.page.getByRole('textbox', {name: 'Telephone'}).fill(randomOwnerTelephone)
-        //await this.page.waitForTimeout(200)
+        
     }
 }
