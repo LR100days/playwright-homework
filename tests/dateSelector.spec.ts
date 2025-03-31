@@ -1,5 +1,6 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 import { PageManager } from '../page_objects/pageManager';
+import { DataGenerationHelper } from '../utils/dataGenerationHelper';
 
 test.beforeEach( async({page}) => {
   await page.goto('/')
@@ -14,11 +15,13 @@ test('Select the desired date in the calendar', async ({page}) => {
   const birthYear = '2014'
   const birthMonth = '05'
   const birthDay = '02'
-  const randomPetName = await pm.onOwnerInformationPage().generateRandomPetName()
+
+  const testDataHelper = new DataGenerationHelper()
+  const randomPetName = await testDataHelper.generateRandomPetName()
 
   await pm.onOwnerInformationPage().addNewPet(randomPetName, birthYear, birthMonth, birthDay, 'dog')
   await pm.onOwnerInformationPage().validateAddedPetDetailsAre(randomPetName, birthYear, birthMonth, birthDay, 'dog')
-  await pm.onOwnerInformationPage().deletePet(randomPetName)
+  await pm.onOwnerInformationPage().deletePetAndValidateResult(randomPetName)
 });
 
 test('Select the dates of visits and validate dates order.', async ({page}) => {
@@ -27,7 +30,9 @@ test('Select the dates of visits and validate dates order.', async ({page}) => {
   await pm.onOwnerInformationPage().openAddVisitFormFor("Samantha", 'Jean Coleman')
   
   const todayVisitDateIsSelected = await pm.onNewVisitPage().selectDateInTheCalendarOnNewVisitPageToBeToday()
-  const randomDescriptionForFirstVisit = await pm.onNewVisitPage().generateRandomVisitDescription()
+
+  const testDataHelper = new DataGenerationHelper()
+  const randomDescriptionForFirstVisit = await testDataHelper.generateRandomVisitDescription()
   await pm.onNewVisitPage().addNewVisitDescription(randomDescriptionForFirstVisit)
   await pm.onNewVisitPage().confirmNewVisit()
   await pm.onOwnerInformationPage().validateVisitDate(todayVisitDateIsSelected)
@@ -35,11 +40,11 @@ test('Select the dates of visits and validate dates order.', async ({page}) => {
   await pm.onOwnerInformationPage().openAddVisitFormFor("Samantha", 'Jean Coleman')
   await pm.onNewVisitPage().selectDesiredDateInTheCalendarOnNewVisitPageToBeDaysBack(45)
   
-  const randomDescriptionForSecondVisit = await pm.onNewVisitPage().generateRandomVisitDescription()
+  const randomDescriptionForSecondVisit = await testDataHelper.generateRandomVisitDescription()
   await pm.onNewVisitPage().addNewVisitDescription(randomDescriptionForSecondVisit)
   await pm.onNewVisitPage().confirmNewVisit()
   await pm.onOwnerInformationPage().validateTwoVisitDatesForPet("Samantha", randomDescriptionForFirstVisit, randomDescriptionForSecondVisit)
   
-  await pm.onOwnerInformationPage().deleteVisitForPet("Samantha",randomDescriptionForFirstVisit)
-  await pm.onOwnerInformationPage().deleteVisitForPet("Samantha",randomDescriptionForSecondVisit)
+  await pm.onOwnerInformationPage().deleteVisitAndValidateResultForPet("Samantha",randomDescriptionForFirstVisit)
+  await pm.onOwnerInformationPage().deleteVisitAndValidateResultForPet("Samantha",randomDescriptionForSecondVisit)
 });

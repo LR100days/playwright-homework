@@ -1,9 +1,9 @@
-import { Page, expect } from '@playwright/test';
+import { Page } from '@playwright/test';
+import { HelperBase } from './helperBase';
 
-export class EditSpecialtyPage {
-    readonly page: Page
+export class EditSpecialtyPage extends HelperBase{
     constructor(page: Page){
-        this.page = page
+        super(page)
     }
 
      /**

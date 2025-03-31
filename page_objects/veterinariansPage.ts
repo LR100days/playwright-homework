@@ -1,9 +1,9 @@
 import { Page, expect } from '@playwright/test';
+import { HelperBase } from './helperBase';
 
-export class VeterinariansPage {
-    readonly page: Page
+export class VeterinariansPage extends HelperBase{
     constructor(page: Page){
-        this.page = page
+        super(page)
     }
 
     async clickEditButtonForVet(vetName: string){

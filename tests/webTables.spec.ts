@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { PageManager } from '../page_objects/pageManager';
+import { DataGenerationHelper } from '../utils/dataGenerationHelper';
 
 test.beforeEach( async({page}) => {
   await page.goto('/')
@@ -80,7 +81,8 @@ test('Validate specialty lists', async ({page}) => {
     const pm = new PageManager(page)
     await pm.navigateTo().specialtiesPage()
 
-    const randomSpecialty = await pm.onSpecialtiesPage().generateRandomSpecialty()
+    const testDataHelper = new DataGenerationHelper()
+    const randomSpecialty = await testDataHelper.generateRandomSpecialty()
     await pm.onSpecialtiesPage().addNewSpecialty(randomSpecialty)
 
     let allSpecialties = await pm.onSpecialtiesPage().getListOfAllSpecialtiesThatAreShownInTable()

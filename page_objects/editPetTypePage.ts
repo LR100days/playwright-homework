@@ -1,5 +1,5 @@
 import { Page, expect } from '@playwright/test';
-import { HelperBase } from '../page_objects/helperBase';
+import { HelperBase } from './helperBase';
 
 export class EditPetTypePage extends HelperBase{
     constructor(page: Page){
@@ -25,7 +25,7 @@ export class EditPetTypePage extends HelperBase{
 
     async confirmPetTypeNameUpdating(){
         await this.page.getByRole('button', {name:"Update"}).click();
-        await this.page.waitForURL('/pettypes')
+        
     }
 
     async clickCancelButtonForPetTypeUpdating(){

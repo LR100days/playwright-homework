@@ -1,7 +1,7 @@
 import { Page, expect } from '@playwright/test';
-import { HelperBase } from '../page_objects/helperBase';
+import { HelperBase } from './helperBase';
 
-export class OwnerInformationPage extends HelperBase{
+export class OwnerInformationPage extends HelperBase {
     constructor(page: Page){
         super(page)
     }
@@ -56,7 +56,7 @@ export class OwnerInformationPage extends HelperBase{
         await this.validatePetTypeOnOwnerInfoPage(petName, petType)
     }
 
-    async deletePet(petName: string){
+    async deletePetAndValidateResult(petName: string){
         const petTomTable= this.page.locator(".dl-horizontal", { hasText: petName })
         await petTomTable.getByRole('button', {name: "Delete Pet"}).click()
         await expect(petTomTable).not.toBeVisible()
@@ -72,7 +72,7 @@ export class OwnerInformationPage extends HelperBase{
         await expect(petTableAllColumnsForSamanthatRow.last()).toHaveText(petOwner)
     }
 
-    async deleteVisitForPet(petName: string,description:string){
+    async deleteVisitAndValidateResultForPet(petName: string,description:string){
         const petVisitsTable = this.page.locator('app-pet-list', { has: this.page.getByText(petName) }).locator('app-visit-list')
         
         await petVisitsTable.locator('tr', { has: this.page.getByText(description) }).getByRole('button', { name: 'Delete Visit' }).click()
